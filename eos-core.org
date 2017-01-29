@@ -370,24 +370,29 @@ the system will restore the remaining buffers.
 I've recently disabled this, because I enjoy starting clean when I restart
 Emacs, so it's nice to have the option if desired..
 
+Desktop+ will automatically save the desktop when Emacs exits
+
 #+BEGIN_src emacs-lisp
-(desktop-save-mode 1)
-(setq desktop-restore-eager 1)
+;; (desktop-save-mode 1) <-- handled by desktop+
+;; load all values eagerly
+(setq desktop-restore-eager 10)
+;; Don't save TRAMP, ftp, or "KILL" buffers
 (setq desktop-files-not-to-save "\\(^/[^/:]*:\\|(ftp)$\\|KILL\\)")
+;; Don't restore different frames, only restore the one frame
 (setq desktop-restore-frames nil)
+
+(use-package desktop+
+  :ensure t
+  :init
+  (defun eos/load-default-desktop ()
+    "Load the default EOS desktop, assuming one has been saved
+with the name `default'."
+    (interactive)
+    (desktop+-load "default")
+    (message "Loaded \"default\" desktop."))
+
+  (add-hook 'after-init-hook #'eos/load-default-desktop))
 #+END_SRC
-
-Emacs should automatically save my state, and does so every two minutes.
-
-#+begin_src emacs-lisp
-(defun eos/desktop-save ()
-  "Write the desktop save file to ~/.emacs.d"
-  (desktop-save user-emacs-directory))
-
-(if (not (boundp 'eos/desktop-save-timer))
-    (setq eos/desktop-save-timer
-          (run-with-idle-timer 180 t #'eos/desktop-save)))
-#+end_src
 
 By default, my machine drops me in to a =*scratch*= buffer. Originally designed
 to be an lisp playground that you could dive right in to on start up, it's sort
@@ -551,6 +556,13 @@ I use [[https://github.com/lewang/ws-butler/][ws-butler]].
   (add-hook 'text-mode-hook #'ws-butler-mode))
 #+END_SRC
 
+On the other hand, auto-indenting can be really handy.
+
+#+BEGIN_SRC emacs-lisp
+(use-package auto-indent-mode
+  :ensure t)
+#+END_SRC
+
 Let's configure some popup rules, so buffers don't take over the whole workspace
 when they are popped up. I do this with Popwin
 
@@ -656,11 +668,11 @@ for my webserver, in case I want to manually copy things around.
 (use-package bookmark+
   :ensure t
   :defer 10
+  :init (setq bmkp-replace-EWW-keys-flag t)
   :config
-  (progn
-    (setq bookmark-version-control t
-          ;; auto-save bookmarks
-          bookmark-save-flag 1)))
+  (setq bookmark-version-control t
+        ;; auto-save bookmarks
+        bookmark-save-flag 1))
 #+END_SRC
 
 Anzu shows the number of search hits in the modeline, which is handy.
@@ -702,14 +714,34 @@ using a big font size and I need more eshell space
   :ensure t
   :diminish golden-ratio-mode
   :defer t
+  :init
+  (add-hook 'ediff-before-setup-windows-hook (lambda () (golden-ratio-mode -1)))
+  (add-hook 'ediff-quit-hook (lambda () (golden-ratio-mode 1)))
   :config
+  ;; Default is 1.0, but I find this adjust just slightly less, which is nice
+  (setq golden-ratio-adjust-factor .9)
+
   (defun eos/helm-alive-p ()
     (if (boundp 'helm-alive-p)
         (symbol-value 'helm-alive-p)))
-  (add-to-list 'golden-ratio-exclude-modes #'messages-buffer-mode)
-  (add-to-list 'golden-ratio-exclude-modes #'fundamental-mode)
-  ;; Inhibit helm
-  (add-to-list 'golden-ratio-inhibit-functions #'eos/helm-alive-p))
+  (defun eos/ispell-running-p ()
+    (and (boundp 'ispell-choices-buffer)
+         (get-buffer ispell-choices-buffer)))
+
+  ;; Inhibit helm and ispell buffers
+  (setq golden-ratio-inhibit-functions '(eos/helm-alive-p eos/ispell-running-p))
+
+  (setq golden-ratio-exclude-buffer-regexp '("\\`\\*[Hh]elm.*\\*\\'")
+        golden-ratio-exclude-buffer-names '("*Org Select*")
+        golden-ratio-exclude-modes '(messages-buffer-mode
+                                     fundamental-mode
+                                     ediff-mode
+                                     calendar-mode
+                                     wget-mode
+                                     mu4e-view-mode
+                                     mu4e-headers-mode
+                                     magit-popup-mode)
+        golden-ratio-recenter t))
 #+END_SRC
 
 Add a generic cleanup method that can be called everywhere, bound to =C-c n=:
@@ -881,6 +913,16 @@ Ignore case when performing completion
 #+BEGIN_SRC emacs-lisp
 (setq completion-ignore-case t
       read-file-name-completion-ignore-case t)
+#+END_SRC
+
+I occasionally use =rgrep= to search through code, and it can be pretty handy to
+be able to refactor the name of a method or something by making the ~*grep*~
+buffer writable, that's what wgrep does.
+
+#+BEGIN_SRC emacs-lisp
+(use-package wgrep
+  :ensure t
+  :init (require 'wgrep))
 #+END_SRC
 
 * GPG and gpg-agent (as well as SSH agent)
@@ -1100,7 +1142,38 @@ In most non-programming modes, =M-.= can be used to spellcheck the word
   :ensure t
   :defer t
   :diminish ""
-  :init (add-hook 'prog-mode-hook #'flyspell-prog-mode)
+  :init
+  ;; So previously, I used to do this:
+  ;;(add-hook 'prog-mode-hook #'flyspell-prog-mode)
+
+  ;; start with it turned off
+  (setq eos/programming-spellcheck nil)
+
+  (use-package shut-up :ensure t)
+  (defun eos/flyspell-buffer-quietly ()
+    (interactive)
+    (when eos/programming-spellcheck
+      (save-excursion (shut-up (flyspell-buffer)))))
+
+  ;; But, the problem then is that you get spell checking as you go, instead,
+  ;; I think I'd rather have the buffer spellchecked when it's saved, and still
+  ;; be able to go through the errors
+  (defun eos/turn-on-programming-spellcheck ()
+    (interactive)
+    (flyspell-mode -1)
+    (when (not (and (boundp 'org-src-mode)
+                    org-src-mode))
+      ;; Tell the local buffer it's safe to flyspell this after save
+      (setq-local eos/programming-spellcheck t)
+      ;; Automatically becomes local
+      (setq flyspell-generic-check-word-predicate
+            #'flyspell-generic-progmode-verify)
+      ;; C-, is normally set in flyspell mode, but since we're not turning it on,
+      ;; we still need to be able to hit it, so bind it locally
+      (local-set-key (kbd "C-,") 'flyspell-goto-next-error)))
+  ;; Turned off right now, as I'm still tweaking this
+  ;;(add-hook 'after-save-hook #'eos/flyspell-buffer-quietly)
+  (add-hook 'prog-mode-hook #'eos/turn-on-programming-spellcheck)
   :config
   (define-key flyspell-mode-map (kbd "C-.") 'company-complete))
 #+END_SRC
@@ -1121,9 +1194,9 @@ interface to the parts of EOS.
   "
 ^Toggle^
 ^^^^^^^^----------------------
-_d_: debug-on-error
-_D_: debug-on-quit
-_f_: fixed/variable width mode
+_d_: debug-on-error             _+_: monitor jack in
+_D_: debug-on-quit              _-_: monitor jack out
+_f_: fixed/variable width mode  _R_: code reading mode
 _F_: auto-fill-mode
 _l_: toggle-truncate-lines
 _h_: hl-line-mode
@@ -1144,6 +1217,9 @@ _q_: quit
   ("h" hl-line-mode :exit t)
   ("v" eos/turn-on-viewing-mode :exit t)
   ("n" eos/narrow-or-widen-dwim :exit t)
+  ("+" eos/monitor-jack-in :exit t)
+  ("-" eos/monitor-jack-out :exit t)
+  ("R" eos/code-reading-mode :exit t)
   ("q" nil :exit t))
 
 (defhydra eos/hydra-next-error nil
@@ -1238,13 +1314,14 @@ And finally, the main EOS Hydra for entry:
   [_p_] Proced      [_W_] Weather   [(] Macros
   [_e_] EWW         [_R_] RSS       [`] Errors
   [_d_] Downloads   [_D_] Debbugs   [_C_] ES-CC
-                  [_B_] Bookmarks
+  [_b_] Project's Eshell          [_B_] Bookmarks
   [_q_] quit
 "
 
   ("`" eos/hydra-next-error/body :exit t)
   ("(" eos/hydra-macro/body :exit t)
   ("a" (org-agenda nil " ") :exit t)
+  ("b" eos/popup-project-eshell :exit t)
   ("A" eos/hydra-about-emacs/body :exit t)
   ("t" eos/hydra-toggle-map/body :exit t)
   ("T" eos/start-or-jump-to-twitter :exit t)
@@ -1282,10 +1359,11 @@ Eyebrowse is a great package for workspaces in Emacs.
     (defun eos/create-eyebrowse-setup ()
       (interactive)
       "Create a default window config, if none is present"
-      (when (not (eyebrowse--window-config-present-p 3))
-        ;; there's probably a better way to do this, creating tthree workspaces
+      (when (not (eyebrowse--window-config-present-p 4))
+        ;; there's probably a better way to do this, creating four workspaces
         (eyebrowse-switch-to-window-config-2)
         (eyebrowse-switch-to-window-config-3)
+        (eyebrowse-switch-to-window-config-4)
         (eyebrowse-switch-to-window-config-1)))
     (setq eyebrowse-wrap-around t
           eyebrowse-new-workspace t)

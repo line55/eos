@@ -11,7 +11,7 @@
 :PROPERTIES:
 :CUSTOM_ID: mu4e
 :END:
-I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source. I unpack it to ~/src/mu-0.9.13 (or whatever
+I usually install [[http://www.djcbsoftware.nl/code/mu/][mu]] from source. I unpack it to ~/src/mu-0.9.18 (or whatever
 version) so I can reference the mu4e elisp files. Then run the following to
 install mu:
 
@@ -30,7 +30,7 @@ to return the correct path depending on the account the email is from.
 (defun eos/load-mail ()
   "Load all the EOS mu4e mail configuration"
   (interactive)
-  (add-to-list 'load-path "~/src/mu-0.9.16/mu4e")
+  (add-to-list 'load-path "~/src/mu-0.9.18/mu4e")
   (use-package mu4e
     :if window-system
     :config
@@ -86,6 +86,8 @@ to return the correct path depending on the account the email is from.
           mu4e-maildir       "~/.mail"
           ;; don't use unicode
           mu4e-use-fancy-chars nil
+          ;; show slightly more lines
+          mu4e-headers-visible-lines 12
           ;; check for new messages every 180 seconds (3 min)
           mu4e-update-interval 180)
 
@@ -146,7 +148,7 @@ passed in. Also supports ignoring the msg at the point."
     (defun mlh-folder-for (acct g-folder-name other-folder-name)
       (if (or (equal "elastic" acct) (equal "gmail" acct))
           (format "/%s/[Gmail].%s" acct g-folder-name)
-        (format "/%s/INBOX.%s" acct other-folder-name)))
+        (format "/%s/%s" acct other-folder-name)))
 
     ;; Support for multiple accounts
     (setq mu4e-sent-folder   (lambda (msg)
@@ -235,7 +237,7 @@ passed in. Also supports ignoring the msg at the point."
            (format "%s"
                    (mapconcat (lambda (fmt)
                                 (format fmt name))
-                              '("flag:unread AND maildir:/%s/INBOX")
+                              '("flag:unread AND maildir:/%s/Inbox")
                               " "))))
        mlh-mu4e-account-alist
        " OR "))
@@ -327,16 +329,12 @@ passed in. Also supports ignoring the msg at the point."
             ("maildir:/elastic/build"      "Build failures"       ?B)
             ("date:today..now"             "Today's messages"     ?t)
             ("date:7d..now"                "Last 7 days"          ?W)
-            ("maildir:/fastmail/INBOX"     "Fastmail"             ?f)
-            ("maildir:/elastic/INBOX"      "Elastic"              ?s)
-            ("maildir:/gmail/INBOX"        "Gmail"                ?g)
+            ("maildir:/fastmail/Inbox"     "Fastmail"             ?f)
+            ("maildir:/elastic/Inbox"      "Elastic"              ?s)
+            ("maildir:/gmail/Inbox"        "Gmail"                ?g)
             ("maildir:/elastic/github"     "Issues (github)"      ?i)
-            ("maildir:/elastic/INBOX OR maildir:/gmail/INBOX OR maildir:/fastmail/INBOX"
-             "All Mail" ?a)
-            ("maildir:/elastic/INBOX AND subject:Production AND from:support@elastic.co"
-             "Production support" ?p)
-            ("maildir:/elastic/INBOX AND subject:Development AND from:support@elastic.co"
-             "Development support" ?d)))
+            ("maildir:/elastic/Inbox OR maildir:/gmail/Inbox OR maildir:/fastmail/Inbox"
+             "All Mail" ?a)))
 
     ;; start mu4e
     (mu4e~start)

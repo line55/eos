@@ -18,14 +18,8 @@ whatever I'm in the mood for. This is used later on for the modeline theme, as
 well as the general theme for look-and-feel things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar eos/background 'dark)
+(defvar eos/background 'light)
 ;;(defvar eos/background 'dark)
-
-;; On thulcandra (my laptop), I might want a light background for being outside
-;; and in very bright locations while having a lower brightness setting, so this
-;; can changed to be specific to my laptop
-(when (equal (system-name) "thulcandra")
-  (setq eos/background 'dark))
 #+END_SRC
 
 * Emacs Appearance
@@ -86,29 +80,42 @@ balanced of color and pleasing to my eyes.
         :ensure t
         :disabled t
         :init
-        (load-theme 'doom-one t)
-        :config
-        (eval-after-load "smartparens"
-          '(set-face-attribute 'sp-pair-overlay-face nil
-                               :background "#333333"
-                               :foreground "#bbc2cf"))
-        (add-hook 'after-init-hook
-                  (lambda ()
-                    (set-face-attribute 'show-paren-match nil
-                                        :foreground "#1f5582"
-                                        :background "#ffffff"))))
+        (load-theme 'doom-one t))
       (use-package color-theme-sanityinc-tomorrow
         :ensure t
+        :disabled t
         :init
         (load-theme 'sanityinc-tomorrow-night t)
         ;; Just ever so slightly more bright foreground text, default is
         ;; "#c5c8c6". Makes it easier to see on a sunny day
-        (set-face-foreground 'default "#ffffff")))
+        (set-face-foreground 'default "#ffffff"))
+      (use-package tao-theme
+        :ensure t
+        :init
+        (load-theme 'tao-yin t)
+        (require 'git-gutter)
+        (require 'git-gutter-fringe)
+        (set-face-attribute 'git-gutter:added nil :foreground "green")
+        (set-face-attribute 'git-gutter-fr:added nil :foreground "green")
+        (set-face-attribute 'git-gutter:deleted nil :foreground "red")
+        (set-face-attribute 'git-gutter-fr:deleted nil :foreground "red")
+        (set-face-attribute 'git-gutter:modified nil :foreground "light blue")
+        (set-face-attribute 'git-gutter-fr:modified nil :foreground "light blue")))
   (use-package leuven-theme
     :ensure t
+    :disabled t
     :init
     (load-theme 'leuven t)
-    (set-face-background 'default "#F7F7F7")))
+    (set-face-background 'default "#F7F7F7")
+    (set-face-attribute 'eyebrowse-mode-line-active nil
+                        :foreground "#000000"
+                        :underline t)
+    (set-face-attribute 'eyebrowse-mode-line-inactive nil
+                        :foreground "#888888"))
+  (use-package github-theme
+    :ensure t
+    :init
+    (load-theme 'github t)))
 #+END_SRC
 
 * Fonts
@@ -125,24 +132,21 @@ nice to me on both Linux and any other computer. Even though it's called
 :END:
 
 #+BEGIN_SRC emacs-lisp
+;; The original font height (so it can be restored too at a later time)
+(setq eos/original-height 105)
+
 (defun eos/setup-x11-fonts ()
   (when (eq window-system 'x)
     ;; default font and variable-pitch fonts
-    (if (equal (system-name) "ivalice")
-        (progn
-          ;; Ivalice has a big monitor, the text needs to be bigger
-          (set-face-attribute 'default nil :family "Hack" :height 145)
-          (set-face-attribute 'variable-pitch nil
-                              :family "DejaVu Sans" :height 145))
-      (set-face-attribute 'default nil :family "Hack" :height 105)
-      (set-face-attribute 'variable-pitch nil :family "DejaVu Sans" :height 105))
+    (set-face-attribute 'default nil :family "Hack" :height eos/original-height)
+    (set-face-attribute 'variable-pitch nil
+                        :family "DejaVu Sans" :height eos/original-height)
     ;; font for all unicode characters
     (set-fontset-font t 'unicode "DejaVu Sans Mono" nil 'prepend)))
 
 (when (eq window-system 'x)
   (add-hook 'after-init-hook #'eos/setup-x11-fonts))
 #+END_SRC
-
 
 ** Config for OSX:
 :PROPERTIES:
@@ -157,7 +161,52 @@ nice to me on both Linux and any other computer. Even though it's called
     (set-face-attribute 'fixed-pitch nil :height 120)))
 
 (when (eq system-type 'darwin)
+  ;; The original font height (so it can be restored too at a later time)
+  (setq eos/original-height 120)
   (add-hook 'after-init-hook #'eos/setup-osx-fonts))
+#+END_SRC
+
+** Configuration for monitor switching
+
+Sometimes I want to plug my laptop into a larger monitor, so I'd like to have a
+single function I can call to adjust any sizes that are necessary.
+
+#+BEGIN_SRC emacs-lisp
+(defvar eos/height-increase 20
+  "Default value to increment the size by when jacking into a monitor.")
+
+(defun eos/monitor-jack-in ()
+  "Increase the font size by `eos/height-increase' amount, for
+when you jack into an external monitor."
+  (interactive)
+  (set-face-attribute 'default nil :height (+ (face-attribute 'default :height)
+                                              eos/height-increase))
+  (set-face-attribute 'variable-pitch
+                      nil
+                      :height (+ (face-attribute 'variable-pitch :height)
+                                 eos/height-increase)))
+
+(defun eos/monitor-jack-out ()
+  "Go back to the default font size and `line-spacing'"
+  (interactive)
+  (set-face-attribute 'default nil :height eos/original-height)
+  (set-face-attribute 'variable-pitch nil :height eos/original-height)
+  (text-scale-adjust 0)
+  (when (fboundp 'minimap-mode)
+    (minimap-mode 0))
+  (setq line-spacing 0))
+
+(defun eos/code-reading-mode ()
+  "Do a bunch of fancy stuff to make reading/browsing code
+easier. When you're done, `eos/monitor-jack-out' is a great way
+to go back to a normal setup."
+  (interactive)
+  (delete-other-windows)
+  (text-scale-increase 1)
+  (setq line-spacing 5)
+  (use-package minimap :ensure t)
+  (when (not minimap-mode)
+    (minimap-mode 1)))
 #+END_SRC
 
 * Emacs' Mode-line
@@ -211,7 +260,7 @@ responsiveness, so I go back and forth with it.
   (setq sml/shorten-directory t
         sml/shorten-modes t)
   (add-to-list 'sml/replacer-regexp-list '("^~/Sync/org/" ":org:"))
-  (add-to-list 'sml/replacer-regexp-list '("^~/es/x-plugins/" ":X:"))
+  (add-to-list 'sml/replacer-regexp-list '("^~/es/elasticsearch-extra/x-pack/" ":X-PACK:"))
   (add-to-list 'sml/replacer-regexp-list '("^~/es/elasticsearch/" ":ES:") t))
 #+END_SRC
 
@@ -261,20 +310,6 @@ buffer.
       hscroll-step 5)
 #+END_SRC
 
-I also have tested the sublimity package, with mixed results.
-
-#+BEGIN_SRC emacs-lisp
-(use-package sublimity
-  :ensure t
-  :disabled t
-  :init
-  (require 'sublimity)
-  (require 'sublimity-scroll)
-  (sublimity-mode)
-  :config
-  (setq scroll-margin 0))
-#+END_SRC
-
 * Highlighting the current line with hl-line-mode
 :PROPERTIES:
 :CUSTOM_ID: h:effd858a-d5e9-4afc-9e36-3488f7c75189
@@ -308,6 +343,8 @@ Turn it on by default (if enabled!) in prog-mode
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'prog-mode-hook #'eos/turn-on-hl-line)
+(add-hook 'mu4e-view-mode-hook #'eos/turn-on-hl-line)
+(add-hook 'erc-mode-hook #'eos/turn-on-hl-line)
 #+END_SRC
 
 * The Editor Fringe
@@ -548,7 +585,8 @@ java-mode applies the color-identifiers configuration.
       (eos/make-local-face 'font-lock-builtin-face :foreground nil :weight 'bold)
       (color-identifiers-mode 1)))
   (add-hook 'java-mode-hook #'color-identifiers-mode)
-  (add-hook 'emacs-lisp-mode-hook #'color-identifiers-mode))
+  (add-hook 'emacs-lisp-mode-hook #'color-identifiers-mode)
+  (global-color-identifiers-mode 1))
 #+END_SRC
 
 * Visible marks in buffers

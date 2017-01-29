@@ -45,7 +45,9 @@ Highlight idle things, but only in certain modes
   :init
   (add-hook 'java-mode-hook #'idle-highlight-mode)
   (add-hook 'emacs-lisp-mode-hook #'idle-highlight-mode)
-  (add-hook 'clojure-lisp-mode-hook #'idle-highlight-mode))
+  (add-hook 'clojure-lisp-mode-hook #'idle-highlight-mode)
+  :config
+  (setq idle-highlight-idle-time 1.5))
 #+END_SRC
 
 Hide-show is kind of like Vim's folding, but manually done right now.
@@ -229,6 +231,13 @@ And then things to set up semantic mode
     (require 'semantic/wisent/java)
     (require 'semantic/wisent/java-wy)
     (require 'semantic/ia)
+    (setq semantic-default-submodes
+          '(global-semantic-idle-scheduler-mode
+            global-semanticdb-minor-mode
+            global-semantic-decoration-mode
+            global-semantic-highlight-func-mode
+            global-semantic-idle-summary-mode
+            global-semantic-idle-breadcrumbs-mode))
     (semantic-mode t)
     ;; Fixing a bug in semantic, see #22287
     (defun semanticdb-save-all-db-idle ()
@@ -328,6 +337,8 @@ Now, the smartparens configuration:
 
   (define-key smartparens-mode-map (kbd "C-M-<right>") 'sp-forward-sexp)
   (define-key smartparens-mode-map (kbd "C-M-<left>") 'sp-backward-sexp)
+  (define-key smartparens-mode-map (kbd "M-F") 'sp-forward-sexp)
+  (define-key smartparens-mode-map (kbd "M-B") 'sp-backward-sexp)
 
   (define-key smartparens-mode-map (kbd "C-M-d") 'sp-down-sexp)
   (define-key smartparens-mode-map (kbd "C-M-a") 'sp-backward-down-sexp)
@@ -389,13 +400,7 @@ Now, the smartparens configuration:
     (sp-local-pair "/*" "*/" :post-handlers '((" | " "SPC")
                                               ("* ||\n[i]" "RET"))))
 
-  (smartparens-global-strict-mode 1)
-  ;; Disabled because I use the built-in show-paren mode
-  ;;(show-smartparens-global-mode 1)
-  :config
-  (set-face-attribute 'sp-pair-overlay-face nil
-                      :background "#333333" :foreground "#bbc2cf")
-  )
+  (smartparens-global-strict-mode 1))
 #+END_SRC
 
 * Paredit everywhere
@@ -810,11 +815,28 @@ the contents, and other such things. It's a package called "eval-expr".
   (add-hook 'after-init-hook #'eval-expr-install))
 #+END_SRC
 
-Finally, a couple of helpers for the minibuffer:
+Set up some things for developing Emacs itself:
+
+#+BEGIN_SRC emacs-lisp
+(use-package debbugs
+  :ensure t)
+#+END_SRC
+
+A couple of helpers for the minibuffer:
 
 #+BEGIN_SRC emacs-lisp
 (add-hook 'eval-expression-minibuffer-setup-hook #'eldoc-mode)
 (add-hook 'eval-expression-minibuffer-setup-hook #'paredit-mode)
+#+END_SRC
+
+Display the ugly =^L= lines in Elisp files as actual lines
+
+#+BEGIN_SRC emacs-lisp
+(use-package page-break-lines
+  :ensure t
+  :commands (turn-on-page-break-lines-mode)
+  :init
+  (add-hook 'emacs-lisp-mode-hook #'turn-on-page-break-lines-mode))
 #+END_SRC
 
 * Python
@@ -924,6 +946,14 @@ There's =tern= also, but I leave it turned off by default, just installed
   :ensure t)
 #+END_SRC
 
+Finally, use json-mode for JSON instead of js-mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode
+  :ensure t
+  :mode "\\.json\\'")
+#+END_SRC
+
 * Shell scripting
 :PROPERTIES:
 :CUSTOM_ID: h:5fe30558-190d-476d-9174-cca2e986bb97
@@ -980,4 +1010,13 @@ And support for flycheck and rust
   :ensure t
   :init
   (add-hook 'rust-mode-hook #'flycheck-rust-setup))
+#+END_SRC
+
+* Groovy
+
+I tend to have to edit a lot of =build.gradle= files these days...
+
+#+BEGIN_SRC emacs-lisp
+(use-package groovy-mode
+  :ensure t)
 #+END_SRC
