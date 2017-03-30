@@ -5,3 +5,9 @@ initialize.sh
 *.elc
 out/
 sh/
+/Hack-Bold.ttf
+/Hack-BoldItalic.ttf
+/Hack-Italic.ttf
+/Hack-Regular.ttf
+/eos
+/site-lisp/site-lisp

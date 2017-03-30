@@ -1,6 +1,6 @@
 #+TITLE: The Emacs Operating System (EOS)
-#+AUTHOR: Lee Hinman
-#+EMAIL: lee@writequit.org
+#+AUTHOR: Carmine Casciato
+#+EMAIL: line@line55.com
 #+SETUPFILE: ~/eos/setupfiles/eos.setup
 
 | *Author* | {{{author}}} ({{{email}}})    |
@@ -10,6 +10,9 @@
 :PROPERTIES:
 :CUSTOM_ID: eos
 :END:
+The following is Lee Hinman's Emacs setup that I am currently modifying. Here is
+his blurb:
+
 This is my attempt at a complete workflow inside of Emacs.
 
 There are many like it, but this one is mine. So let's start with a story.
@@ -160,27 +163,27 @@ loads successfully.
 (setq debug-on-quit t)
 #+END_SRC
 
-I load a couple of custom versions of libraries that are included in Emacs. This
-is so I can run a newer version than what's bundled, in particular this checks
-for the existence and loads them if there are there, otherwise it uses the
-bundled version.
+# I load a couple of custom versions of libraries that are included in Emacs. This
+# is so I can run a newer version than what's bundled, in particular this checks
+# for the existence and loads them if there are there, otherwise it uses the
+# bundled version.
 
-A custom version of [[http://cedet.sourceforge.net/][CEDET]]:
+# A custom version of [[http://cedet.sourceforge.net/][CEDET]]:
 
-#+BEGIN_SRC emacs-lisp
-;; Load a custom version of cedet, if available
-(when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
-  (load "~/src/elisp/cedet/cedet-devel-load.el"))
-#+END_SRC
+# #+BEGIN_SRC emacs-lisp
+# ;; Load a custom version of cedet, if available
+# (when (file-exists-p "~/src/elisp/cedet/cedet-devel-load.el")
+#   (load "~/src/elisp/cedet/cedet-devel-load.el"))
+# #+END_SRC
 
-And a custom version of [[http://orgmode.org/][Org-mode]]:
+# And a custom version of [[http://orgmode.org/][Org-mode]]:
 
-#+BEGIN_SRC emacs-lisp
-;; Load a custom version of org-mode, if available
-(when (file-exists-p "~/src/elisp/org-mode/lisp")
-  (add-to-list 'load-path "~/src/elisp/org-mode/lisp")
-  (require 'org))
-#+END_SRC
+# #+BEGIN_SRC emacs-lisp
+# ;; Load a custom version of org-mode, if available
+# (when (file-exists-p "~/src/elisp/org-mode/lisp")
+#   (add-to-list 'load-path "~/src/elisp/org-mode/lisp")
+#   (require 'org))
+# #+END_SRC
 
 Also, let's make =cl= things available right from the start
 
@@ -188,17 +191,17 @@ Also, let's make =cl= things available right from the start
 (require 'cl)
 #+END_SRC
 
-I can't live without this, "x" on Dvorak is where "b" is on Qwerty, and it's
-just too hard for all the C-x things I have to hit. Maybe one day I'll just
-switch to evil (or god-mode) and be done with it.
+# I can't live without this, "x" on Dvorak is where "b" is on Qwerty, and it's
+# just too hard for all the C-x things I have to hit. Maybe one day I'll just
+# switch to evil (or god-mode) and be done with it.
 
-For now, 't' is much more convenient so I switch =C-x= and =C-t= on the
-keyboard. I don't transpose things nearly as often as I =C-x= things
+# For now, 't' is much more convenient so I switch =C-x= and =C-t= on the
+# keyboard. I don't transpose things nearly as often as I =C-x= things
 
-#+BEGIN_SRC emacs-lisp
-(define-key key-translation-map "\C-t" "\C-x")
-(define-key key-translation-map "\C-x" "\C-t")
-#+END_SRC
+# #+BEGIN_SRC emacs-lisp
+# ;;(define-key key-translation-map "\C-t" "\C-x")
+# ;;(define-key key-translation-map "\C-x" "\C-t")
+# #+END_SRC
 
 ** =package.el= Setup
 :PROPERTIES:
@@ -341,6 +344,7 @@ quite sure how that would work for tangling, so for now it's hard-coded.
 (try-load 'eos-develop)
 (try-load 'eos-es)
 (try-load 'eos-org)
+(try-load 'eos-cc-nav)
 (try-load 'eos-writing)
 (try-load 'eos-dired)
 (try-load 'eos-remote)

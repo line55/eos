@@ -1,0 +1,68 @@
+#+TITLE: EOS: Helm Module
+#+AUTHOR: Carmine Casciato
+#+EMAIL: line@line55.com
+#+SETUPFILE: ~/eos/setupfiles/eos.setup
+
+#+BEGIN_SRC emacs-lisp
+(provide 'eos-cc-nav)
+#+END_SRC
+
+* Text Navigation by ErgoEmacs
+
+#+begin_src emacs-lisp
+;; move by word
+(global-set-key (kbd "M-u") 'backward-word)
+(global-set-key (kbd "M-o") 'forward-word) ; was (prefix)
+
+;; Delete previous/next char.
+(global-set-key (kbd "M-d") 'delete-backward-char)
+(global-set-key (kbd "M-f") 'delete-char)
+
+; Delete previous/next word.
+(global-set-key (kbd "M-e") 'backward-kill-word)
+(global-set-key (kbd "M-r") 'kill-word)
+
+;; Single char cursor movement. (assuming you are on qwerty)
+(global-set-key (kbd "M-j") 'backward-char)
+(global-set-key (kbd "M-l") 'forward-char)
+(global-set-key (kbd "M-i") 'previous-line)
+(global-set-key (kbd "M-k") 'next-line)
+(global-set-key (kbd "M-SPC") 'set-mark-command)
+
+;; kicking the habit
+(global-unset-key (kbd "C-b")) ; backward-char
+(global-unset-key (kbd "C-f")) ; forward-char
+(global-unset-key (kbd "C-p")) ; previous-line
+(global-unset-key (kbd "C-n")) ; next-line
+ #+end_src
+
+* Buffer magic
+
+Delete key via f6.
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<f6>") 'cdc/kill-current-buffer)
+(defun cdc/kill-current-buffer ()
+  (interactive)
+  (kill-buffer (current-buffer)))
+  #+end_src
+
+* Skeletons
+
+Insert babel blocks easily. Create a [[/usr/local/share/emacs/26.0.50/lisp][skeleton]] it:
+
+#+begin_src emacs-lisp
+;; sblk - Generic block #+begin_FOO .. #+end_FOO
+(define-skeleton skel-org-block
+  "Insert an org block, querying for type."
+  "Type: "
+  "#+begin_src " str "\n"
+  _ - \n
+  "#+end_src \n")
+#+end_src
+
+Bind it into org.
+
+#+begin_src emacs-lisp
+(define-abbrev org-mode-abbrev-table "sblk" "" 'skel-org-block)
+#+end_src

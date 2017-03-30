@@ -1,0 +1,24 @@
+* DONE add my own module
+Added eos-cc-nav as module that contains some nav and keybindings.
+
+Babel blocks must be of type emacs-lisp ala
+#+begin_src emacs-lisp
+(define-abbrev org-mode-abbrev-table "sblk" "" 'skel-org-block)
+#+end_src
+
+Then they will get automatically tangled.
+
+Also, must add a try-load to [[org:eos][eos.org]]
+* Setup changes
+** TODO How does one work with fly spell? How do I add to dictionary?
+** eos-core changes
+*** DONE change email and user name
+** eos-org changes
+*** TODO Smart parens is hijacking important keys in org mode
+DEL and <M-d> and <M-f>
+*** TODO Add more TODO tags in org
+*** TODO don't use arrows to modify headings
+* Emacs
+** Store links to org heading custom ids?
+* Arch questions
+** helm and hydra are not the same?
