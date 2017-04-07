@@ -15,3 +15,20 @@
 | C-x C-i | helm semantic or imenu (depending on the mode)  |
 
 M-_ - redo?
+
+ORG
+  (when (fboundp 'eyebrowse-next-window-config)
+    (define-key org-mode-map (kbd "C-'") #'eyebrowse-next-window-config))
+  (define-key org-mode-map (kbd "C-c C-x C-f") #'org-refile)
+  (define-key org-mode-map (kbd "<C-tab>") #'other-window) This is interesting
+  (when (boundp 'org-agenda-mode-map)
+    (define-key org-agenda-mode-map (kbd "C-c C-x C-f") #'org-agenda-refile)))
+
+(use-package org
+  ;;  :ensure org-plus-contrib
+  :bind (("C-c l" . org-store-link)
+         ("C-c a" . org-agenda)
+         ("C-c b" . org-iswitchb)
+         ("C-c c" . org-capture)
+         ("C-c M-p" . org-babel-previous-src-block)
+         ("C-c M-n" . org-babel-next-src-block))

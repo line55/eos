@@ -1,3 +1,12 @@
+* Goals
+Pick up a bunch of new emacs tricks
+
+Get super duper dev environments
+
+Get crazy new org mode setup
+
+Use emacs as a super interface to the bare metal
+- more unix
 * DONE add my own module
 Added eos-cc-nav as module that contains some nav and keybindings.
 
@@ -8,17 +17,76 @@ Babel blocks must be of type emacs-lisp ala
 
 Then they will get automatically tangled.
 
-Also, must add a try-load to [[org:eos][eos.org]]
+Also, must add a try-load to [[org:eos][eos.org]], and fileme to
 * Setup changes
-** TODO How does one work with fly spell? How do I add to dictionary?
+** TODO shit I don't get
+*** TODO How to open gui from zsh?
+*** TODO Missing keys
+C-c left for windows
+where the fuck is C-h m?
+*** DONE smartparens bullshit
+Is it smartparens? Yes
+Goddam sp-unwrap-sexp
 ** eos-core changes
 *** DONE change email and user name
+
 ** eos-org changes
 *** TODO Smart parens is hijacking important keys in org mode
 DEL and <M-d> and <M-f>
-*** TODO Add more TODO tags in org
-*** TODO don't use arrows to modify headings
+Goddam sp-unwrap-sexp to delete a parens
+*** DONE Add my agenda files
+*** DONE Add my TODO tags in org
+
+#+begin_src emacs-lisp
+    ;; Org todo keywords
+    (setq org-todo-keywords
+          '((sequence "TODO(t)" "|" "DONE(d)")
+            (sequence "TODO(t)"
+                      "STARTED(s)"
+                      "SOMEDAY(m)"
+                      "INPROGRESS(i)"
+                      "HOLD(h)"
+                      "WAITING(w@/!)"
+                      "NEEDSREVIEW(n@/!)"
+                      "|" "DONE(d)")
+            (sequence "TODO(t)" "INPROGRESS(i)" "|" "CANCELLED(c@/!)")
+            (sequence "TODO(t)" "STARTED(s)" "|" "CANCELLED(c@/!)")))
+    ;; Org faces
+    (setq org-todo-keyword-faces
+          '(("TODO" :foreground "red" :weight bold)
+            ("MEETING" :foreground "red" :weight bold)
+            ("STARTED" :foreground "blue violet" :weight bold)
+            ("INPROGRESS" :foreground "deep sky blue" :weight bold)
+            ("SOMEDAY" :foreground "purple" :weight bold)
+            ("NEEDSREVIEW" :foreground "#edd400" :weight bold)
+            ("DONE" :foreground "forest green" :weight bold)
+            ("WAITING" :foreground "orange" :weight bold)
+            ("HOLD" :foreground "magenta" :weight bold)
+            ("CANCELLED" :foreground "forest green" :weight bold)))
+    ;; add or remove tags on state change
+    (setq org-todo-state-tags-triggers
+          '(("CANCELLED" ("CANCELLED" . t))
+            ("WAITING" ("WAITING" . t))
+            ("HOLD" ("WAITING") ("HOLD" . t))
+            (done ("WAITING") ("HOLD"))
+            ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("INPROGRESS" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("STARTED" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+#+end_src
+
+*** TODO IntraSee agenda separate
+Something that modifies org-agenda-files
+*** TODO How to expand archive set headings
+*** TODO message-mode from old-emacs
 * Emacs
 ** Store links to org heading custom ids?
-* Arch questions
+** TODO don't use arrows to modify headings
+* Architecture questions
 ** helm and hydra are not the same?
+** eyebrowse
+C-' in order to cycle through 4 eyebrowse somethings
+** gnu global?
+* Emacs Questions
+- where is major mode help stored? Is it from docstrings?
+- can you automatically find where the keybinding is defined?

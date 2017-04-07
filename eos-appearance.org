@@ -18,8 +18,8 @@ whatever I'm in the mood for. This is used later on for the modeline theme, as
 well as the general theme for look-and-feel things.
 
 #+BEGIN_SRC emacs-lisp
-(defvar eos/background 'light)
-;;(defvar eos/background 'dark)
+;;(defvar eos/background 'light)
+(defvar eos/background 'dark)
 #+END_SRC
 
 * Emacs Appearance
@@ -123,9 +123,7 @@ balanced of color and pleasing to my eyes.
 :PROPERTIES:
 :CUSTOM_ID: fonts
 :END:
-I've been using [[http://sourcefoundry.org/hack/][Hack]] or DejaVu Sans almost exclusively lately, it looks pretty
-nice to me on both Linux and any other computer. Even though it's called
-"Bitstream Vera Sans Mono" on OSX, it's really the same.
+m+ 1mn for monotype
 
 ** Config for Linux/X11 systems:
 :PROPERTIES:
@@ -134,12 +132,12 @@ nice to me on both Linux and any other computer. Even though it's called
 
 #+BEGIN_SRC emacs-lisp
 ;; The original font height (so it can be restored too at a later time)
-(setq eos/original-height 90)
+(setq eos/original-height 95)
 
 (defun eos/setup-x11-fonts ()
   (when (eq window-system 'x)
     ;; default font and variable-pitch fonts
-    (set-face-attribute 'default nil :family "Hack" :height eos/original-height)
+    (set-face-attribute 'default nil :family "M+ 1mn" :height eos/original-height)
     (set-face-attribute 'variable-pitch nil
                         :family "DejaVu Sans" :height eos/original-height)
     ;; font for all unicode characters

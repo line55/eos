@@ -199,46 +199,60 @@ And now the huge org-mode configuration
           ;; Agenda org-mode files
           org-agenda-files `(,(file-truename "~/org/refile.org")
                              ,(file-truename "~/org/todo.org")
+                             ,(file-truename "~/org/chic.org")
+                             ,(file-truename "~/org/codewars.org")
+                             ,(file-truename "~/org/coursera.org")
+                             ,(file-truename "~/org/house.org")
+                             ,(file-truename "~/org/ical.org")
+                             ,(file-truename "~/org/kaggle.org")
+                             ,(file-truename "~/org/line55.org")
+                             ,(file-truename "~/org/linux.org")
+                             ,(file-truename "~/org/magenta.org")
+                             ,(file-truename "~/org/margaux.org")
+                             ,(file-truename "~/org/pandakar.org")
+                             ,(file-truename "~/org/shopify.org")
+                             ;,(file-truename "~/org/intrasee/intrasee.org")
                              ,(file-truename "~/org/bibliography.org")
                              ,(file-truename "~/org/notes.org")
-                             ,(file-truename "~/org/es-team.org")
                              ,(file-truename "~/org/journal.org")))
 
     ;; Org todo keywords
     (setq org-todo-keywords
-          '((sequence "TODO(t)" "|" "DONE(d)")
-            (sequence "TODO(t)"
-                      "STARTED(s)"
-                      "SOMEDAY(m)"
-                      "INPROGRESS(i)"
-                      "HOLD(h)"
-                      "WAITING(w@/!)"
-                      "NEEDSREVIEW(n@/!)"
-                      "|" "DONE(d)")
-            (sequence "TODO(t)" "INPROGRESS(i)" "|" "CANCELLED(c@/!)")
-            (sequence "TODO(t)" "STARTED(s)" "|" "CANCELLED(c@/!)")))
+          '((sequence "TODO(t)" "NEXT(n)" "STARTED(s)" "|" "DONE(d!/!)")
+            (sequence "WAITING(w@/@)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE")
+            (sequence "|" "YES(Y)" "NO(N)" "GEEVE(G)")))
     ;; Org faces
     (setq org-todo-keyword-faces
           '(("TODO" :foreground "red" :weight bold)
-            ("MEETING" :foreground "red" :weight bold)
-            ("STARTED" :foreground "blue violet" :weight bold)
-            ("INPROGRESS" :foreground "deep sky blue" :weight bold)
-            ("SOMEDAY" :foreground "purple" :weight bold)
-            ("NEEDSREVIEW" :foreground "#edd400" :weight bold)
-            ("DONE" :foreground "forest green" :weight bold)
-            ("WAITING" :foreground "orange" :weight bold)
-            ("HOLD" :foreground "magenta" :weight bold)
-            ("CANCELLED" :foreground "forest green" :weight bold)))
-    ;; add or remove tags on state change
+           ("NEXT" :foreground "blue" :weight bold)
+           ("STARTED" :foreground "blue" :weight bold)
+           ("DONE" :foreground "forest green" :weight bold)
+           ("WAITING" :foreground "orange" :weight bold)
+           ("HOLD" :foreground "magenta" :weight bold)
+           ("CANCELLED" :foreground "forest green" :weight bold)
+           ("PHONE" :foreground "forest green" :weight bold)
+           ("YES" :foreground "forest green" :weight bold)
+           ("NO" :foreground "red" :weight bold)
+           ("GEEVE" :foreground "orange" :weight bold)))
+
+    (setq org-use-fast-todo-selection t)
+    (setq org-treat-S-cursor-todo-selection-as-state-change nil)
+
+;;I have a few triggers that automatically assign tags to tasks based on state
+;;changes. If a task moves to CANCELLED state then it gets a CANCELLED tag.
+;;Moving a CANCELLED task back to TODO removes the CANCELLED tag. The tags are
+;;used to filter tasks in the agenda views conveniently.
     (setq org-todo-state-tags-triggers
           '(("CANCELLED" ("CANCELLED" . t))
             ("WAITING" ("WAITING" . t))
-            ("HOLD" ("WAITING") ("HOLD" . t))
+            ("HOLD" ("WAITING" . t) ("HOLD" . t))
             (done ("WAITING") ("HOLD"))
             ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-            ("INPROGRESS" ("WAITING") ("CANCELLED") ("HOLD"))
+            ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
             ("STARTED" ("WAITING") ("CANCELLED") ("HOLD"))
-            ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
+            ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))
+            )
+          )
     ;; refile targets all level 1 and 2 headers in current file and agenda files
     (setq org-refile-targets '((nil :maxlevel . 2)
                                (org-agenda-files :maxlevel . 2)))
