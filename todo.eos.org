@@ -79,6 +79,13 @@ Goddam sp-unwrap-sexp to delete a parens
 Something that modifies org-agenda-files
 *** TODO How to expand archive set headings
 *** TODO message-mode from old-emacs
+*** TODO my gnus back
+:LOGBOOK:
+CLOCK: [2017-05-08 Mon 18:36]
+CLOCK: [2017-05-08 Mon 16:41]--[2017-05-08 Mon 17:35] =>  0:54
+CLOCK: [2017-05-08 Mon 13:40]--[2017-05-08 Mon 13:44] =>  0:04
+:END:
+Need my dovecot and my mbsync?
 * Emacs
 ** Store links to org heading custom ids?
 ** TODO don't use arrows to modify headings
@@ -90,3 +97,6 @@ C-' in order to cycle through 4 eyebrowse somethings
 * Emacs Questions
 - where is major mode help stored? Is it from docstrings?
 - can you automatically find where the keybinding is defined?
+* This EOS git repo
+** TODO Host on GCP to avoid public scrutiny
+*** Upload code to GCP

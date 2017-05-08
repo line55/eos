@@ -191,18 +191,6 @@ Also, let's make =cl= things available right from the start
 (require 'cl)
 #+END_SRC
 
-# I can't live without this, "x" on Dvorak is where "b" is on Qwerty, and it's
-# just too hard for all the C-x things I have to hit. Maybe one day I'll just
-# switch to evil (or god-mode) and be done with it.
-
-# For now, 't' is much more convenient so I switch =C-x= and =C-t= on the
-# keyboard. I don't transpose things nearly as often as I =C-x= things
-
-# #+BEGIN_SRC emacs-lisp
-# ;;(define-key key-translation-map "\C-t" "\C-x")
-# ;;(define-key key-translation-map "\C-x" "\C-t")
-# #+END_SRC
-
 ** =package.el= Setup
 :PROPERTIES:
 :CUSTOM_ID: package.el

@@ -51,7 +51,7 @@ Delete key via f6.
 
 Insert babel blocks easily. Create a [[/usr/local/share/emacs/26.0.50/lisp][skeleton]] it:
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
 ;; sblk - Generic block #+begin_FOO .. #+end_FOO
 (define-skeleton skel-org-block
   "Insert an org block, querying for type."
@@ -59,10 +59,10 @@ Insert babel blocks easily. Create a [[/usr/local/share/emacs/26.0.50/lisp][skel
   "#+begin_src " str "\n"
   _ - \n
   "#+end_src \n")
-#+end_src
+#+END_SRC
 
 Bind it into org.
 
-#+begin_src emacs-lisp
+#+BEGIN_SRC emacs-lisp
 (define-abbrev org-mode-abbrev-table "sblk" "" 'skel-org-block)
-#+end_src
+#+BEGIN_SRC

@@ -227,11 +227,11 @@ bindings I use more frequently:
   ;; List of times to show in helm-world-time
   (setq display-time-world-list '(("PST8PDT" "Los Altos")
                                   ("America/Denver" "Denver")
+                                  ("America/Chicago" "Chicago")
                                   ("EST5EDT" "Boston")
                                   ("UTC" "UTC")
                                   ("Europe/London" "London")
-                                  ("Europe/Amsterdam" "Amsterdam")
-                                  ("Asia/Bangkok" "Bangkok")
+                                  ("Europe/Paris" "Paris")
                                   ("Asia/Tokyo" "Tokyo")
                                   ("Australia/Sydney" "Sydney")))
 
