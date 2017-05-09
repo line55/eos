@@ -54,7 +54,7 @@ And now the huge org-mode configuration
 
 #+BEGIN_SRC emacs-lisp
 (use-package org
-  ;;  :ensure org-plus-contrib
+  :ensure org-plus-contrib
   :bind (("C-c l" . org-store-link)
          ("C-c a" . org-agenda)
          ("C-c b" . org-iswitchb)
@@ -74,12 +74,12 @@ And now the huge org-mode configuration
     (add-hook 'org-agenda-mode-hook #'hl-line-mode)
     (add-hook 'org-mode-hook #'eos/org-mode-hook)
     ;; enabled export backends
-    ;; (use-package ox-rss)
+    (use-package ox-rss)
     (when (boundp 'org-export-backends)
       (custom-set-variables '(org-export-backends '(ascii beamer html latex md))))
     ;; Allow's electric-pair-mode to surround things with = and ~ in org-mode
-    (modify-syntax-entry ?~ "(~" org-mode-syntax-table)
-    (modify-syntax-entry ?= "(=" org-mode-syntax-table)
+    ;;(modify-syntax-entry ?~ "(~" org-mode-syntax-table)
+    ;;(modify-syntax-entry ?= "(=" org-mode-syntax-table)
 
     ;; Automatically save all org files every minute
     (run-at-time "00:59" 3600 'org-save-all-org-buffers)

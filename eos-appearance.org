@@ -1,5 +1,5 @@
 #+TITLE: EOS: Emacs Appearance
-#+AUTHOR: Lee Hinman
+#+AUTHOR: Lee Hinman, Carmine Casciato
 #+EMAIL: lee@writequit.org
 #+SETUPFILE: ~/eos/setupfiles/eos.setup
 
@@ -76,54 +76,28 @@ balanced of color and pleasing to my eyes.
 #+BEGIN_SRC emacs-lisp
 (if (eq eos/background 'dark)
     (progn
-      (use-package doom-themes
-        :ensure t
-        :disabled t
-        :init
-        (load-theme 'doom-one t))
       (use-package color-theme-sanityinc-tomorrow
         :ensure t
-        :disabled t
         :init
-        (load-theme 'sanityinc-tomorrow-night t)
+        (load-theme 'sanityinc-tomorrow-eighties t)
         ;; Just ever so slightly more bright foreground text, default is
         ;; "#c5c8c6". Makes it easier to see on a sunny day
         (set-face-foreground 'default "#ffffff"))
-      (use-package tao-theme
-        :ensure t
-        :disabled t
-        :init
-        (load-theme 'tao-yin t)
-        (require 'git-gutter)
-        (require 'git-gutter-fringe)
-        (set-face-attribute 'git-gutter:added nil :foreground "green")
-        (set-face-attribute 'git-gutter-fr:added nil :foreground "green")
-        (set-face-attribute 'git-gutter:deleted nil :foreground "red")
-        (set-face-attribute 'git-gutter-fr:deleted nil :foreground "red")
-        (set-face-attribute 'git-gutter:modified nil :foreground "light blue")
-        (set-face-attribute 'git-gutter-fr:modified nil :foreground "light blue"))
-      (use-package madhat2r-theme
-        :ensure t
-        :init
-        (load-theme 'madhat2r t)))
+      )
   (use-package leuven-theme
     :ensure t
     :init
     (load-theme 'leuven t)
     ;; Ever-so-slightly darker background
     (set-face-background 'default "#F7F7F7"))
-  (use-package github-theme
-    :ensure t
-    :disabled t
-    :init
-    (load-theme 'github t)))
+  )
 #+END_SRC
 
 * Fonts
 :PROPERTIES:
 :CUSTOM_ID: fonts
 :END:
-m+ 1mn for monotype
+m+ 1mn for monotype, and now with extra variable-pitch
 
 ** Config for Linux/X11 systems:
 :PROPERTIES:
@@ -132,16 +106,18 @@ m+ 1mn for monotype
 
 #+BEGIN_SRC emacs-lisp
 ;; The original font height (so it can be restored too at a later time)
-(setq eos/original-height 95)
+(setq eos/original-height 105)
+(setq eos/original-variable-height 135)
 
 (defun eos/setup-x11-fonts ()
   (when (eq window-system 'x)
     ;; default font and variable-pitch fonts
-    (set-face-attribute 'default nil :family "M+ 1mn" :height eos/original-height)
+    (set-face-attribute 'default     nil :family "M+ 1mn" :height eos/original-height)
+    (set-face-attribute 'fixed-pitch nil :family "M+ 1mn" :height eos/original-height)
     (set-face-attribute 'variable-pitch nil
-                        :family "DejaVu Sans" :height eos/original-height)
+                        :family "Bitstream Charter" :height eos/original-variable-height)
     ;; font for all unicode characters
-    (set-fontset-font t 'unicode "DejaVu Sans Mono" nil 'prepend)))
+    (set-fontset-font t 'unicode "Lato" nil 'prepend)))
 
 (when (eq window-system 'x)
   (add-hook 'after-init-hook #'eos/setup-x11-fonts))
@@ -263,7 +239,6 @@ responsiveness, so I go back and forth with it.
 #+BEGIN_SRC emacs-lisp
 (use-package smart-mode-line
   :ensure t
-  :disabled t
   :init
   (if (eq eos/background 'dark)
       (setq sml/theme eos/background)
@@ -308,70 +283,70 @@ This is the modeline built into spacemacs, but a separate package. Worth a try, 
 ** Personal mode line
 
 #+BEGIN_SRC emacs-lisp
-(defun eos/custom-mode-line ()
-  "Set up the customized EOS mode line (very basic)"
-  (interactive)
+;; (defun eos/custom-mode-line ()
+;;   "Set up the customized EOS mode line (very basic)"
+;;   (interactive)
 
-  (setq mode-line-position
-        '(;; %p print percent of buffer above top of window, o Top, Bot or All
-          ;; (-3 "%p")
-          ;; %I print the size of the buffer, with kmG etc
-          ;; (size-indication-mode ("/" (-4 "%I")))
-          ;; " "
-          ;; %l print the current line number
-          ;; %c print the current column
-          (line-number-mode ("%l" (column-number-mode ":%c")))))
+;;   (setq mode-line-position
+;;         '(;; %p print percent of buffer above top of window, o Top, Bot or All
+;;           ;; (-3 "%p")
+;;           ;; %I print the size of the buffer, with kmG etc
+;;           ;; (size-indication-mode ("/" (-4 "%I")))
+;;           ;; " "
+;;           ;; %l print the current line number
+;;           ;; %c print the current column
+;;           (line-number-mode ("%l" (column-number-mode ":%c")))))
 
-  (defun shorten-directory (dir max-length)
-    "Show up to `max-length' characters of a directory name `dir'."
-    (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
-          (output ""))
-      (when (and path (equal "" (car path)))
-        (setq path (cdr path)))
-      (while (and path (< (length output) (- max-length 4)))
-        (setq output (concat (car path) "/" output))
-        (setq path (cdr path)))
-      (when path
-        (setq output (concat ".../" output)))
-      output))
+;;   (defun shorten-directory (dir max-length)
+;;     "Show up to `max-length' characters of a directory name `dir'."
+;;     (let ((path (reverse (split-string (abbreviate-file-name dir) "/")))
+;;           (output ""))
+;;       (when (and path (equal "" (car path)))
+;;         (setq path (cdr path)))
+;;       (while (and path (< (length output) (- max-length 4)))
+;;         (setq output (concat (car path) "/" output))
+;;         (setq path (cdr path)))
+;;       (when path
+;;         (setq output (concat ".../" output)))
+;;       output))
 
-  (defvar mode-line-directory
-    '(:propertize
-      (:eval (if (buffer-file-name)
-                 (concat " " (shorten-directory default-directory 20)) " ")))
-    "Formats the current directory.")
+;;   (defvar mode-line-directory
+;;     '(:propertize
+;;       (:eval (if (buffer-file-name)
+;;                  (concat " " (shorten-directory default-directory 20)) " ")))
+;;     "Formats the current directory.")
 
-  (put 'mode-line-directory 'risky-local-variable t)
+;;   (put 'mode-line-directory 'risky-local-variable t)
 
-  (setq-default mode-line-buffer-identification
-                (propertized-buffer-identification "%b "))
+;;   (setq-default mode-line-buffer-identification
+;;                 (propertized-buffer-identification "%b "))
 
-  (setq-default mode-line-format
-                '("%e"
-                  mode-line-front-space
-                  ;; I'm always on utf-8
-                  ;;mode-line-mule-info
-                  mode-line-client
-                  mode-line-modified
-                  " "
-                  mode-line-position
-                  ;; no need to indicate this specially
-                  ;;mode-line-remote
-                  ;; this is for text-mode emacs only
-                  ;;mode-line-frame-identification
-                  " "
-                  mode-line-directory
-                  mode-line-buffer-identification
-                  " "
-                  ;; I use magit, not vc-mode
-                  ;;(vc-mode vc-mode)
-                  (flycheck-mode flycheck-mode-line)
-                  " "
-                  mode-line-modes
-                  mode-line-misc-info
-                  mode-line-end-spaces)))
+;;   (setq-default mode-line-format
+;;                 '("%e"
+;;                   mode-line-front-space
+;;                   ;; I'm always on utf-8
+;;                   ;;mode-line-mule-info
+;;                   mode-line-client
+;;                   mode-line-modified
+;;                   " "
+;;                   mode-line-position
+;;                   ;; no need to indicate this specially
+;;                   ;;mode-line-remote
+;;                   ;; this is for text-mode emacs only
+;;                   ;;mode-line-frame-identification
+;;                   " "
+;;                   mode-line-directory
+;;                   mode-line-buffer-identification
+;;                   " "
+;;                   ;; I use magit, not vc-mode
+;;                   ;;(vc-mode vc-mode)
+;;                   (flycheck-mode flycheck-mode-line)
+;;                   " "
+;;                   mode-line-modes
+;;                   mode-line-misc-info
+;;                   mode-line-end-spaces)))
 
-(add-hook 'after-init-hook #'eos/custom-mode-line)
+;; (add-hook 'after-init-hook #'eos/custom-mode-line)
 #+END_SRC
 
 * Scrolling
@@ -500,96 +475,23 @@ systemctl --user start redshift
 :CUSTOM_ID: variable-width-fonts
 :END:
 
-So, variable font width is really nice in GUI emacs, with org-mode however,
-almost all of my source blocks don't look that great without a fixed-width font
-(as well as tables, verbatim, etc).
+l55: So it looks like the following can work, pretty simple
 
-So, there is a way to hack around thing. This relies on a custom patch to
-org-mode that looks like:
+#+BEGIN_SRC emacs-lisp :tangle yes
+(defun set-buffer-variable-pitch ()
+    (interactive)
+    (variable-pitch-mode t)
+    (setq line-spacing 3)
+     (set-face-attribute 'org-table nil :inherit 'fixed-pitch)
+     (set-face-attribute 'org-code nil :inherit 'fixed-pitch)
+     (set-face-attribute 'org-block nil :inherit 'fixed-pitch)
+    )
 
-#+BEGIN_SRC diff :tangle no
-diff --git a/lisp/org-faces.el b/lisp/org-faces.el
-index 941a604..abc646c 100644
---- a/lisp/org-faces.el
-+++ b/lisp/org-faces.el
-@@ -537,6 +537,9 @@ follows a #+DATE:, #+AUTHOR: or #+EMAIL: keyword."
-   "Face used for the line delimiting the end of source blocks."
-   :group 'org-faces)
-
-+(defface org-block-background '((t ()))
-+  "Face used for the source block background.")
-+
- (defface org-verbatim
-   (org-compatible-face 'shadow
-     '((((class color grayscale) (min-colors 88) (background light))
-diff --git a/lisp/org.el b/lisp/org.el
-index af68539..b2c8309 100644
---- a/lisp/org.el
-+++ b/lisp/org.el
-@@ -5932,6 +5932,15 @@ by a #."
-              (cond
-               ((and lang (not (string= lang "")) org-src-fontify-natively)
-                (org-src-font-lock-fontify-block lang block-start block-end)
-+               ;; remove old background overlays
-+               (mapc (lambda (ov)
-+                       (if (eq (overlay-get ov 'face) 'org-block-background)
-+                           (delete-overlay ov)))
-+                     (overlays-at (/ (+ beg1 block-end) 2)))
-+               ;; add a background overlay
-+               (setq ovl (make-overlay beg1 block-end))
-+                (overlay-put ovl 'face 'org-block-background)
-+                (overlay-put ovl 'evaporate t) ; make it go away when empty
-                (add-text-properties beg1 block-end '(src-block t)))
-               (quoting
-                (add-text-properties beg1 (min (point-max) (1+ end1))
-
+  (add-hook 'org-mode-hook 'set-buffer-variable-pitch)
+  (add-hook 'eww-mode-hook 'set-buffer-variable-pitch)
+  (add-hook 'markdown-mode-hook 'set-buffer-variable-pitch)
+  (add-hook 'Info-mode-hook 'set-buffer-variable-pitch)
 #+END_SRC
-
-To re-add support for the =org-block-background= face that was removed in 8.3+.
-
-Then, you can do something like this:
-
-#+BEGIN_SRC emacs-lisp
-(when (and window-system
-           ;; Only if I have a custom patched org-mode
-           (file-exists-p "~/src/elisp/org-mode"))
-  (add-hook 'org-mode-hook 'variable-pitch-mode)
-  (add-hook 'markdown-mode-hook 'variable-pitch-mode)
-
-  (defun eos/adjoin-to-list-or-symbol (element list-or-symbol)
-    (let ((list (if (not (listp list-or-symbol))
-                    (list list-or-symbol)
-                  list-or-symbol)))
-      (require 'cl-lib)
-      (cl-adjoin element list)))
-
-  ;; Fontify certain org things with fixed-width
-  (eval-after-load "org"
-    '(mapc
-      (lambda (face)
-        (set-face-attribute
-         face nil
-         :inherit
-         (eos/adjoin-to-list-or-symbol
-          'fixed-pitch
-          (face-attribute face :inherit))))
-      (list 'org-code 'org-block 'org-table 'org-block-background
-            'org-verbatim 'org-formula 'org-macro)))
-
-  ;; Fontify certain markdown things with fixed-width
-  (eval-after-load "markdown-mode"
-    '(mapc
-      (lambda (face)
-        (set-face-attribute
-         face nil
-         :inherit
-         (eos/adjoin-to-list-or-symbol
-          'fixed-pitch
-          (face-attribute face :inherit))))
-      (list 'markdown-pre-face 'markdown-inline-code-face))))
-#+END_SRC
-
-Great credit for this goes to [[https://yoo2080.wordpress.com/2013/05/30/monospace-font-in-tables-and-source-code-blocks-in-org-mode-proportional-font-in-other-parts/][this blog post.]]
 
 * Rainbow delimiters (but not the way you think)
 :PROPERTIES:
@@ -679,7 +581,7 @@ and move towards a model of actually treating the Mark as more than just a
 selection tool, and towards treating it as a navigation tool. In light of that,
 I'm going to start disabling =transient-mark-mode= and only relying on
 =visible-mark-mode= for showing the mark, which alleviates most of the issues
-you see with disabling =transient-mark-mode=
+ you see with disabling =transient-mark-mode=
 
 #+begin_src emacs-lisp :tangle yes
 (use-package visible-mark

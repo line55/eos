@@ -81,7 +81,6 @@ Something that modifies org-agenda-files
 *** TODO message-mode from old-emacs
 *** TODO my gnus back
 :LOGBOOK:
-CLOCK: [2017-05-08 Mon 18:36]
 CLOCK: [2017-05-08 Mon 16:41]--[2017-05-08 Mon 17:35] =>  0:54
 CLOCK: [2017-05-08 Mon 13:40]--[2017-05-08 Mon 13:44] =>  0:04
 :END:

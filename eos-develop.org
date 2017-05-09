@@ -458,7 +458,7 @@ D= ('D' for Documentation) to activate it.
   :ensure t
   :bind (("C-c D" . helm-dash))
   :init
-  (setq helm-dash-common-docsets '("ElasticSearch")
+  (setq helm-dash-common-docsets '("JavaScript")
         helm-dash-min-length 2)
   :config
   (defun eos/use-java-docset ()

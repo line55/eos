@@ -10,8 +10,10 @@
 :PROPERTIES:
 :CUSTOM_ID: eos
 :END:
-The following is Lee Hinman's Emacs setup that I am currently modifying. Here is
-his blurb:
+The following is Lee Hinman's Emacs setup that I am currently modifying. I like
+the modularity, and the many many packages it uses.
+
+Here is Lee's opener:
 
 This is my attempt at a complete workflow inside of Emacs.
 
