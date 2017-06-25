@@ -106,8 +106,8 @@ m+ 1mn for monotype, and now with extra variable-pitch
 
 #+BEGIN_SRC emacs-lisp
 ;; The original font height (so it can be restored too at a later time)
-(setq eos/original-height 105)
-(setq eos/original-variable-height 135)
+(setq eos/original-height 100)
+(setq eos/original-variable-height 105)
 
 (defun eos/setup-x11-fonts ()
   (when (eq window-system 'x)
@@ -116,6 +116,7 @@ m+ 1mn for monotype, and now with extra variable-pitch
     (set-face-attribute 'fixed-pitch nil :family "M+ 1mn" :height eos/original-height)
     (set-face-attribute 'variable-pitch nil
                         :family "Bitstream Charter" :height eos/original-variable-height)
+    (set-face-attribute 'company-tooltip nil :family "M+ 1mn" :height eos/original-height)
     ;; font for all unicode characters
     (set-fontset-font t 'unicode "Lato" nil 'prepend)))
 

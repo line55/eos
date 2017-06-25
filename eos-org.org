@@ -181,11 +181,11 @@ And now the huge org-mode configuration
           ;; show all occurrences of repeating tasks
           org-agenda-repeating-timestamp-show-all t
           ;; always start the agenda on today
-          org-agenda-start-on-weekday nil
+          org-agenda-start-on-weekday 0
           ;; Use sticky agenda's so they persist
           org-agenda-sticky t
-          ;; show 4 agenda days
-          org-agenda-span 4
+          ;; show 7 agenda days
+          org-agenda-span 7
           ;; Do not dim blocked tasks
           org-agenda-dim-blocked-tasks nil
           ;; include the diary in the agenda
@@ -211,7 +211,7 @@ And now the huge org-mode configuration
                              ,(file-truename "~/org/margaux.org")
                              ,(file-truename "~/org/pandakar.org")
                              ,(file-truename "~/org/shopify.org")
-                             ;,(file-truename "~/org/intrasee/intrasee.org")
+                             ,(file-truename "~/org/intrasee/intrasee.org")
                              ,(file-truename "~/org/bibliography.org")
                              ,(file-truename "~/org/notes.org")
                              ,(file-truename "~/org/journal.org")))

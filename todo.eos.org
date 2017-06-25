@@ -74,7 +74,10 @@ Goddam sp-unwrap-sexp to delete a parens
             ("STARTED" ("WAITING") ("CANCELLED") ("HOLD"))
             ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
 #+end_src
-
+*** TODO add in my old org mode setup
+:LOGBOOK:
+CLOCK: [2017-05-14 Sun 18:48]--[2017-05-14 Sun 18:58] =>  0:10
+:END:
 *** TODO IntraSee agenda separate
 Something that modifies org-agenda-files
 *** TODO How to expand archive set headings
