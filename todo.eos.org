@@ -76,18 +76,26 @@ Goddam sp-unwrap-sexp to delete a parens
 #+end_src
 *** TODO add in my old org mode setup
 :LOGBOOK:
+CLOCK: [2017-07-16 Sun 00:48]--[2017-07-16 Sun 02:45] =>  1:57
 CLOCK: [2017-05-14 Sun 18:48]--[2017-05-14 Sun 18:58] =>  0:10
 :END:
+#+begin_src emacs-lisp :tangle no
+(defun bh/insert-inactive-timestamp ()
+  (interactive)
+  (org-insert-time-stamp nil t t nil nil nil))
+(global-set-key (kbd "<f9> t") 'bh/insert-inactive-timestamp)
+#+end_src
 *** TODO IntraSee agenda separate
 Something that modifies org-agenda-files
 *** TODO How to expand archive set headings
 *** TODO message-mode from old-emacs
-*** TODO my gnus back
+*** DONE my gnus back
 :LOGBOOK:
 CLOCK: [2017-05-08 Mon 16:41]--[2017-05-08 Mon 17:35] =>  0:54
 CLOCK: [2017-05-08 Mon 13:40]--[2017-05-08 Mon 13:44] =>  0:04
 :END:
 Need my dovecot and my mbsync?
+*** TODO
 * Emacs
 ** Store links to org heading custom ids?
 ** TODO don't use arrows to modify headings
@@ -102,3 +110,5 @@ C-' in order to cycle through 4 eyebrowse somethings
 * This EOS git repo
 ** TODO Host on GCP to avoid public scrutiny
 *** Upload code to GCP
+* keychords?
+http://timothypratley.blogspot.ca/2015/07/seven-specialty-emacs-settings-with-big.html

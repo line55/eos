@@ -124,10 +124,10 @@ config. I haven't really tried loading them all individually to make sure I
 don't have links between them.
 
 - [[./eos-core.org][Core EOS]] - base Emacs settings and configurations
+- [[./eos-helm.org][Helm]] - incremental completion and selection framework
 - [[./eos-appearance.org][Appearance]] - change the look-and-feel
 - [[./eos-navigation.org][Navigation]] - helpers when navigating around Emacs
 - [[./eos-notify.org][Notification System]] - unifying notifications in Emacs with sauron
-- [[./eos-helm.org][Helm]] - incremental completion and selection framework
 - [[./eos-develop.org][Development (programming) System]] - various development settings
   - [[./eos-java.org][Java]] - for the day job
   - [[./eos-clojure.org][Clojure]] - for the old day job and the open source work
@@ -334,7 +334,7 @@ quite sure how that would work for tangling, so for now it's hard-coded.
 (try-load 'eos-develop)
 (try-load 'eos-es)
 (try-load 'eos-org)
-(try-load 'eos-cc-nav)
+(try-load 'eos-cc-nav)                  ;ergo keys!
 (try-load 'eos-writing)
 (try-load 'eos-dired)
 (try-load 'eos-remote)
@@ -344,7 +344,7 @@ quite sure how that would work for tangling, so for now it's hard-coded.
 (try-load 'eos-shell)
 (try-load 'eos-mail)
 (try-load 'eos-irc)
-(try-load 'eos-distributed)
+;; (try-load 'eos-distributed)
 (try-load 'eos-rss)
 (try-load 'eos-twitter)
 (try-load 'eos-leisure)
@@ -364,6 +364,7 @@ quite sure how that would work for tangling, so for now it's hard-coded.
              (let ((elapsed (eos/time-since-start)))
                (message "Loading %s...done (%.3fs)"
                         ,load-file-name elapsed))) t)
+
 (add-hook 'after-init-hook
           `(lambda ()
              (let ((elapsed (eos/time-since-start)))

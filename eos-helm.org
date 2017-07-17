@@ -57,7 +57,7 @@ bindings I use more frequently:
 | C-x C-f | helm find files                                 |
 | C-x f   | helm projectile                                 |
 | C-x C-r | helm mini (includes recentf)                    |
-| C-x C-o | helm occur (search in buffer)                   |
+| C-x o | helm occur (search in buffer)                   |
 | M-y     | helm kill ring                                  |
 | C-h a   | helm appropos (search functions/vars/commands)  |
 | C-h m   | helm man (man pages)                            |
@@ -377,7 +377,7 @@ Best way to search in a buffer ever
 #+BEGIN_SRC emacs-lisp
 (use-package helm-swoop
   :ensure t
-  :bind (("M-i" . helm-swoop)
+  :bind (("C-M-y" . helm-swoop)         ;don't mess with ergo keys
          ("M-I" . helm-swoop-back-to-last-point)
          ("C-c M-i" . helm-multi-swoop))
   :config
