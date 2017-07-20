@@ -245,8 +245,6 @@ And now the huge org-mode configuration
             '(("oss" . ?o)
               ("home" . ?h)
               ("work" . ?w)
-              ("xpack" . ?x)
-              ("book" . ?b)
               ("support" . ?s)
               ("docs" . ?d)
               ("emacs" . ?e)
@@ -481,8 +479,8 @@ First, a function to use for clocking in
   (interactive)
   (org-clock-in '(4)))
 
-(global-set-key (kbd "<f11>") #'eos/org-clock-in)
-(global-set-key (kbd "<f12>") #'org-clock-out)
+(global-set-key (kbd "C-<f11>") #'eos/org-clock-in)
+;; (global-set-key (kbd "<f12>") #'org-clock-out)
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp
@@ -791,12 +789,13 @@ A simple presentation mode for org-mode
 I'm taking over ownership of this after the last maintainer didn't touch it for
 a year, so I load it from a custom path
 
+CDC- this steals my  <f12>
 #+BEGIN_SRC emacs-lisp
 (if (file-exists-p "~/src/elisp/epresent/")
     (progn
       (add-to-list 'load-path "~/src/elisp/epresent/")
       (require 'epresent))
-  (use-package epresent :ensure t))
+  (use-package epresent :ensure f :disabled t))
 #+END_SRC
 
 ** Presentations with =org-reveal=
@@ -811,3 +810,68 @@ a year, so I load it from a custom path
       (require 'ox-reveal))
   (use-package ox-reveal :ensure t))
 #+END_SRC
+
+* BH setup
+:PROPERTIES:
+:CUSTOM_ID: h:97049d07-8d6d-4da8-81ee-51eb576d8758
+:END:
+
+#+begin_src emacs-lisp
+(global-set-key (kbd "<f12>") 'org-agenda)
+(global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
+;; (global-set-key (kbd "<f9> b") 'bbdb)
+(global-set-key (kbd "<f9> c") 'calendar)
+(global-set-key (kbd "<f9> f") 'boxquote-insert-file)
+(global-set-key (kbd "<f9> g") 'gnus)
+(global-set-key (kbd "<f9> G") 'gnus-no-server)
+(global-set-key (kbd "<f9> i") 'info)
+
+(global-set-key (kbd "C-c r") 'org-capture)
+(global-set-key (kbd "<f9> t") 'bh/insert-inactive-timestamp)
+(global-set-key (kbd "<f11>") 'org-clock-goto)
+
+;;let's see if this sets the point in the right place when adding a heading
+(defun bh/insert-inactive-timestamp ()
+  (interactive)
+  (org-insert-time-stamp nil t t nil nil nil))
+
+(defun bh/insert-heading-inactive-timestamp ()
+  (save-excursion
+    (org-return)
+    (org-cycle)
+    (bh/insert-inactive-timestamp)))
+
+;; (add-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp 'append)
+;; (remove-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp)
+
+;; Keep tasks with dates on the global todo lists
+(setq org-agenda-todo-ignore-with-date nil)
+
+;; Keep tasks with deadlines on the global todo lists
+(setq org-agenda-todo-ignore-deadlines nil)
+
+;; Keep tasks with scheduled dates on the global todo lists
+(setq org-agenda-todo-ignore-scheduled nil)
+
+;; Keep tasks with timestamps on the global todo lists
+(setq org-agenda-todo-ignore-timestamp nil)
+
+;; Remove completed deadline tasks from the agenda view
+(setq org-agenda-skip-deadline-if-done t)
+
+;; Remove completed scheduled tasks from the agenda view
+(setq org-agenda-skip-scheduled-if-done t)
+
+;; Remove completed items from search results
+(setq org-agenda-skip-timestamp-if-done t)
+
+;; Include agenda archive files when searching for things
+(setq org-agenda-text-search-extra-files (quote (agenda-archives)))
+
+;;no multiple timestamps for the same entry in the agenda views
+(setq org-agenda-skip-additional-timestamps-same-entry t)
+
+;;org-indent mode on startup
+(setq org-startup-indented t)
+
+#+end_src

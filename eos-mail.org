@@ -12,27 +12,114 @@
 :CUSTOM_ID: gnus
 :END:
 
+CDC - Some of this taken from my older .emacs
+
 #+BEGIN_SRC sh :tangle sh/link-gnus.sh
 ln -sfv $PWD/out/gnus.el ~/.gnus.el
 #+END_SRC
 
 #+BEGIN_SRC emacs-lisp :tangle out/gnus.el
+(setq user-full-name "Carmine Casciato"
+      smtpmail-auth-credentials (expand-file-name "~/.authinfo.gpg")
+)
+
+(setq gnus-select-method
+      '(nnimap "cc"
+	       (nnimap-address "localhost")
+	       (nnimap-stream network)
+	       (nnimap-authenticator login)
+	       (nnir-search-engine imap)
+	       (nnimap-user "casciato@gmail.com")))
+(add-to-list 'gnus-secondary-select-methods
+      '(nnimap "is"
+	       (nnimap-address "localhost")
+	       (nnimap-stream network)
+	       (nnimap-authenticator login)
+	       (nnir-search-engine imap)
+	       (nnimap-user "carmine.casciato@intrasee.com")))
+; set gmail smtp
+(setq message-send-mail-function 'smtpmail-send-it
+smtpmail-starttls-credentials '(("smtp.gmail.com" 587 nil nil))
+smtpmail-auth-credentials '(("smtp.gmail.com" 587 "casciato@gmail.com" nil))
+smtpmail-default-smtp-server "smtp.gmail.com"
+smtpmail-smtp-server "smtp.gmail.com"
+smtpmail-smtp-service 587)
+
+(add-to-list 'gnus-secondary-select-methods '(nntp "news.gnus.org"))
+(add-to-list 'gnus-secondary-select-methods '(nntp "news.gmane.org"))
+(add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
+
+(setq gnus-mime-display-multipart-related-as-mixed nil)
+(setq mm-text-html-renderer 'shr)
+(setq mm-inline-text-html-with-images t)
+(setq mm-inline-text-html-with-w3m-keymap nil)
+
+(setq starttls-use-gnutls t
+      starttls-gnutls-program "gnutls-cli"
+)
+
+(setq message-send-mail-function 'smtpmail-send-it
+      smtpmail-starttls-credentials '(("smtp.office365.com" 587 nil nil))
+      smtpmail-auth-credentials '(("smtp.office365.com" 587 "carmine.casciato@intrasee.com" nil))
+      smtpmail-default-smtp-server "smtp.office365.com"
+      smtpmail-smtp-server "smtp.office365.com"
+      smtpmail-smtp-service 587
+      smtpmail-local-domain "smtp.office365.com")
+
+;; scan for new messages
+;;
+(gnus-demon-add-handler `gnus-demon-scan-news 25 25)
+(gnus-demon-init)
+
+(setq-default
+     gnus-summary-line-format "%U%R%z %(%&user-date;  %-15,15f  %B%s%)\n"
+     gnus-user-date-format-alist '((t . "%Y-%m-%d %H:%M"))
+     gnus-summary-thread-gathering-function 'gnus-gather-threads-by-references
+     gnus-thread-sort-functions '(gnus-thread-sort-by-date)
+     gnus-sum-thread-tree-false-root ""
+     gnus-sum-thread-tree-indent " "
+     gnus-sum-thread-tree-leaf-with-other "├► "
+     gnus-sum-thread-tree-root ""
+     gnus-sum-thread-tree-single-leaf "╰► "
+     gnus-sum-thread-tree-vertical "│")
+
+(setq smtp-accounts
+      '(("casciato@gmail.com" "Carmine Casciato" "smtp.gmail.com")
+	;; ("line@line55.com" "Carmine Casciato" "mail.line55.com")
+	("carmine.casciato@intrasee.com" "Carmine Casciato" "smtp.office365.com" )
+	)
+      )
+
+(defun my-change-smtp ()
+  (save-excursion
+    (loop with from = (save-restriction
+			(message-narrow-to-headers)
+			(message-fetch-field "from"))
+	  for (addr fname server) in smtp-accounts
+	  when (string-match addr from)
+	  do (setq user-mail-address addr
+		   user-full-name fname
+		   smtpmail-smtp-server server))))
+
+(defadvice smtpmail-via-smtp
+  (before change-smtp-by-message-from-field (recipient buffer &optional ask) activate)
+  (with-current-buffer buffer (my-change-smtp)))
+
+
 (require 'nnir)
 
-(setq user-full-name "Lee Hinman"
-      user-mail-address "lee@writequit.org"
-      message-user-fqdn "writequit.org"
-      gnus-use-adaptive-scoring t)
+;; (setq user-full-name "Lee Hinman"
+;;       user-mail-address "lee@writequit.org"
+;;       message-user-fqdn "writequit.org"
+;;       gnus-use-adaptive-scoring t)
 
 ;; Modify the summary line to show score
-(setq gnus-summary-line-format
-      "%U%R%z %d %I%(%[%4L: %-23,23f%]%') %[%3V%] %s\n")
+;; (setq gnus-summary-line-format
+;;       "%U%R%z %d %I%(%[%4L: %-23,23f%]%') %[%3V%] %s\n")
 
-(setq gnus-select-method '(nntp "news.gmane.org"))
-
-(setq gnus-thread-sort-functions
-      '((not gnus-thread-sort-by-date)
-        (not gnus-thread-sort-by-number)))
+;; (setq gnus-thread-sort-functions
+;;       '((not gnus-thread-sort-by-date)
+;;         (not gnus-thread-sort-by-number)))
 
 (defun my-gnus-group-list-subscribed-groups ()
   "List all subscribed groups with or without un-read messages"
@@ -43,8 +130,8 @@ ln -sfv $PWD/out/gnus.el ~/.gnus.el
   ;; list all the subscribed groups even they contain zero un-read messages
   (kbd "o") 'my-gnus-group-list-subscribed-groups)
 
-;; bury the buffer with 'q' in gnus
-(define-key gnus-group-mode-map (kbd "q") 'bury-buffer)
+;; ;; bury the buffer with 'q' in gnus
+;; (define-key gnus-group-mode-map (kbd "q") 'bury-buffer)
 
 ;; NO 'passive
 (setq gnus-use-cache t)
@@ -70,20 +157,11 @@ ln -sfv $PWD/out/gnus.el ~/.gnus.el
 ;; several replies or is part of a thread, only show the first
 ;; message.  'gnus-thread-ignore-subject' will ignore the subject and
 ;; look at 'In-Reply-To:' and 'References:' headers.
-(setq gnus-thread-hide-subtree t)
-(setq gnus-thread-ignore-subject t)
+;; (setq gnus-thread-hide-subtree t)
+;; (setq gnus-thread-ignore-subject t)
 
 ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
 (setq gnus-use-correct-string-widths nil)
-
-(defun my-gnus-group-list-subscribed-groups ()
-  "List all subscribed groups with or without un-read messages"
-  (interactive)
-  (gnus-group-list-all-groups 5))
-
-(define-key gnus-group-mode-map
-  ;; list all the subscribed groups even they contain zero un-read messages
-  (kbd "o") 'my-gnus-group-list-subscribed-groups)
 
 (define-key gnus-summary-mode-map (kbd "j") 'next-line)
 (define-key gnus-summary-mode-map (kbd "k") 'previous-line)
@@ -92,3 +170,19 @@ ln -sfv $PWD/out/gnus.el ~/.gnus.el
 (define-key gnus-article-mode-map (kbd "k") 'previous-line)
 
 #+END_SRC
+
+* message-mode
+#+begin_src emacs-lisp
+;;orgstruct++-mode= is enabled in =Gnus= message buffers to aid in
+;;creating structured email messages.
+(add-hook 'message-mode-hook 'orgstruct++-mode 'append)
+(add-hook 'message-mode-hook 'turn-on-auto-fill 'append)
+;; (add-hook 'message-mode-hook 'bbdb-define-all-aliases 'append)
+(add-hook 'message-mode-hook 'orgtbl-mode 'append)
+(add-hook 'message-mode-hook
+	  '(lambda () (setq fill-column 90))
+	  'append)
+(add-hook 'message-mode-hook
+	  '(lambda () (local-set-key (kbd "C-c M-o") 'org-mime-htmlize))
+	  'append)
+#+end_src
