@@ -819,13 +819,13 @@ CDC- this steals my  <f12>
 #+begin_src emacs-lisp
 (global-set-key (kbd "<f12>") 'org-agenda)
 (global-set-key (kbd "<f8>") 'org-cycle-agenda-files)
-;; (global-set-key (kbd "<f9> b") 'bbdb)
+(global-set-key (kbd "<f9> b") 'bbdb)
 (global-set-key (kbd "<f9> c") 'calendar)
 (global-set-key (kbd "<f9> f") 'boxquote-insert-file)
 (global-set-key (kbd "<f9> g") 'gnus)
 (global-set-key (kbd "<f9> G") 'gnus-no-server)
 (global-set-key (kbd "<f9> i") 'info)
-
+(global-set-key (kbd "<f9> s") 'bh/switch-to-scratch)
 (global-set-key (kbd "C-c r") 'org-capture)
 (global-set-key (kbd "<f9> t") 'bh/insert-inactive-timestamp)
 (global-set-key (kbd "<f11>") 'org-clock-goto)
@@ -840,6 +840,10 @@ CDC- this steals my  <f12>
     (org-return)
     (org-cycle)
     (bh/insert-inactive-timestamp)))
+
+(defun bh/switch-to-scratch ()
+  (interactive)
+  (switch-to-buffer "*scratch*"))
 
 ;; (add-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp 'append)
 ;; (remove-hook 'org-insert-heading-hook 'bh/insert-heading-inactive-timestamp)
@@ -874,4 +878,19 @@ CDC- this steals my  <f12>
 ;;org-indent mode on startup
 (setq org-startup-indented t)
 
+#+end_src
+
+* org-sync with redmine
+:PROPERTIES:
+:CUSTOM_ID: h:6f45e579-8ffc-46d4-bf44-4dfee0349c75
+:END:
+
+#+begin_src emacs-lisp
+(use-package org-sync
+  :load-path "/home/cc/.emacs.d/org-sync/"
+  :ensure t
+  :config
+  (mapc 'load
+      '("org-sync" "org-sync-bb" "org-sync-github" "org-sync-redmine"))
+      )
 #+end_src
