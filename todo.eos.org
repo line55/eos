@@ -1,4 +1,4 @@
-$* Goals
+* Goals
 Pick up a bunch of new emacs tricks
 
 Get super duper dev environments
