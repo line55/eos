@@ -74,10 +74,10 @@ Deletes whitespace at join."
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 
 ;; join line to next line
-(global-set-key (kbd "M-j")
-                (lambda ()
-                  (interactive)
-                  (join-line -1)))
+;; (global-set-key (kbd "M-j")
+;;                 (lambda ()
+;;                   (interactive)
+;;                   (join-line -1)))
 
 ;; Completion that uses many different methods to find options.
 (global-set-key (kbd "M-/") 'hippie-expand)

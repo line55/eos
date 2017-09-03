@@ -290,16 +290,18 @@ alias grep='grep --color=auto'
 alias egrep='egrep --color=auto'
 alias fgrep='fgrep --color=auto'
 alias ec='emacsclient'
+# full gui emacs
+alias emacs='emacs -c'
 # make less a little more sane
 alias less='less -RX'
 # various port forwarding and hole-punching
 alias scsetup='sudo socat -d -d TCP4-listen:6666,fork OPENSSL:typoet.com:443,cert=host.pem,verify=0'
 alias scsetup2='sudo socat -d -d TCP4-listen:7777,fork OPENSSL:blackex:443,cert=host.pem,verify=0'
 # reverse proxy & keepopen
-alias prox='ssh -nNT -R 4444:localhost:22 writequit.org'
-alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 writequit.org'
-alias awq='autossh -M 23000 writequit.org'
-alias aiv='autossh -M 24000 ivalice'
+# alias prox='ssh -nNT -R 4444:localhost:22 writequit.org'
+# alias autoprox='autossh -M 22000 -nNT -R 4444:localhost:22 writequit.org'
+# alias awq='autossh -M 23000 writequit.org'
+# alias aiv='autossh -M 24000 ivalice'
 # open elinks quickly
 alias el='TERM=xterm-color elinks'
 # datetime aliases
@@ -313,15 +315,17 @@ alias magit='emacs -f magit-status'
 alias se="tar zxvf"
 alias ga="git annex"
 # sync org files
-alias org2ivalice='rsync -azP --delete ~/org/ ivalice-local:~/org'
-alias ivalice2org='rsync -azP --delete ivalice-local:~/org/ ~/org'
-alias xanadu2org='rsync -azP --delete xanadu:~/org/ ~/org'
-alias org2xanadu='rsync -azP --delete ~/org/ xanadu:~/org'
-alias musicsync='rsync -azP --delete ~/Music/ ivalice:/opt/music --exclude="lost+found" --modify-window 30'
+# alias org2ivalice='rsync -azP --delete ~/org/ ivalice-local:~/org'
+# alias ivalice2org='rsync -azP --delete ivalice-local:~/org/ ~/org'
+# alias xanadu2org='rsync -azP --delete xanadu:~/org/ ~/org'
+# alias org2xanadu='rsync -azP --delete ~/org/ xanadu:~/org'
+# alias musicsync='rsync -azP --delete ~/Music/ ivalice:/opt/music --exclude="lost+found" --modify-window 30'
 # start a master tmux
 alias tmaster='tmux -2 -u -S /tmp/mastermux -f .tmux.master.conf'
 alias tmux='tmux -2'
 alias dtop='dstat -cdnpmgs --top-bio --top-cpu --top-mem'
+#nautilus
+alias naut='nautilus --no-desktop &'
 #+END_SRC
 
 *** Functions
@@ -795,7 +799,7 @@ function strace {
 Linux has less customization, mostly differing aliases.
 
 #+BEGIN_SRC sh :tangle out/zsh.d/zsh.Linux
-alias emacs='emacs -nw'
+# alias emacs='emacs -nw'
 
 export EDITOR="emacs -nw"
 #+END_SRC

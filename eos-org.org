@@ -286,6 +286,9 @@ And now the huge org-mode configuration
                 ;; All "STARTED" todo items
                 (todo "STARTED"
                       ((org-agenda-overriding-header "Started tasks")))
+                ;; All "STARTED" todo items
+                (todo "NEXT"
+                      ((org-agenda-overriding-header "Next tasks")))
                 ;; All headings with the "support" tag
                 (tags "support/!"
                       ((org-agenda-overriding-header "Support cases")))
