@@ -1,0 +1,54 @@
+#+TITLE: EOS: JavaScript Module
+#+AUTHOR: Carmine Casciato
+#+EMAIL: casciato@gmail.com
+#+SETUPFILE: ~/eos/setupfiles/eos.setup
+
+#+BEGIN_SRC emacs-lisp
+(provide 'eos-js)
+#+END_SRC
+* Javascript
+:PROPERTIES:
+:CUSTOM_ID: javascript
+:END:
+I want indentation of 2 for json/js.
+
+#+BEGIN_SRC emacs-lisp
+(setq-default js-indent-level 2)
+#+END_SRC
+
+Bleh javascript. js2-mode is better than nothing.
+
+#+BEGIN_SRC emacs-lisp
+(use-package js2-mode
+  :ensure t
+  :mode "\\.js\\'"
+  :config (js2-imenu-extras-setup))
+#+END_SRC
+
+There's =tern= also, but I leave it turned off by default, just installed
+
+#+BEGIN_SRC emacs-lisp
+(use-package tern
+  :ensure t)
+#+END_SRC
+
+Finally, use json-mode for JSON instead of js-mode
+
+#+BEGIN_SRC emacs-lisp
+(use-package json-mode
+  :ensure t
+  :mode "\\.json\\'")
+#+END_SRC
+
+Add some prettier
+#+BEGIN_SRC emacs-lisp
+(use-package prettier-js
+  :ensure t
+  :init
+  (add-hook #'js2-mode-hook #'prettier-js-mode)
+  (add-hook #'web-mode-hook #'prettier-js-mode))
+#+END_SRC
+* Petton's setup
+[[https://emacs.cafe/emacs/javascript/setup/2017/04/23/emacs-setup-javascript.html][Petton JS Setup Part 1]]
+
+Test

@@ -213,7 +213,7 @@ bindings I use more frequently:
         ;; here to the regular default list
         helm-mini-default-sources '(helm-source-buffers-list
                                     helm-source-recentf
-                                    helm-source-bookmarks
+                                    ;; helm-source-bookmarks
                                     helm-source-buffer-not-found))
 
   ;; Files that helm should know how to open

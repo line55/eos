@@ -3,30 +3,31 @@ EOS_DIR := $(dir $(abspath $(lastword $(MAKEFILE_LIST))))
 
 el-modules = eos-core.el \
 	eos-cc-nav.el\
-eos-helm.el \
-						 eos-ido.el \
-						 eos-appearance.el \
-						 eos-navigation.el \
-						 eos-notify.el \
-						 eos-develop.el \
-						 eos-completion.el \
-						 eos-es.el \
-						 eos-org.el \
-						 eos-writing.el \
-						 eos-dired.el \
-						 eos-remote.el \
-						 eos-java.el \
-             eos-clojure.el \
-             eos-web.el \
-             eos-shell.el \
-             eos-mail.el \
-             eos-irc.el \
-             eos-distributed.el \
-             eos-rss.el \
-             eos-twitter.el \
-             eos-leisure.el \
-             eos-music.el \
-             eos.el
+	eos-js.el\
+	eos-helm.el \
+	eos-ido.el \
+	eos-appearance.el \
+	eos-navigation.el \
+	eos-notify.el \
+	eos-develop.el \
+	eos-completion.el \
+	eos-es.el \
+	eos-org.el \
+	eos-writing.el \
+	eos-dired.el \
+	eos-remote.el \
+	eos-java.el \
+        eos-clojure.el \
+        eos-web.el \
+        eos-shell.el \
+        eos-mail.el \
+        eos-irc.el \
+        eos-distributed.el \
+        eos-rss.el \
+        eos-twitter.el \
+        eos-leisure.el \
+        eos-music.el \
+        eos.el
 
 sh-modules = out/zshrc \
 						 out/zshenv

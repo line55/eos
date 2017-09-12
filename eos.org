@@ -132,6 +132,7 @@ don't have links between them.
   - [[./eos-java.org][Java]] - for the day job
   - [[./eos-clojure.org][Clojure]] - for the old day job and the open source work
   - [[./eos-es.org][Elasticsearch]] - so useful for things
+  - [[file:eos-js.org][JavaScript]] - JS (for my day job)
 - [[./eos-org.org][Org-mode and agenda]] - org is a fantastic organization tool
 - [[./eos-writing.org][Writing]] - various settings for writing human language
 - [[./eos-dired.org][Dired]] - directory browsing and file management
@@ -332,6 +333,7 @@ quite sure how that would work for tangling, so for now it's hard-coded.
 (try-load 'eos-notify)
 (try-load 'eos-completion)
 (try-load 'eos-develop)
+(try-load 'eos-js')
 (try-load 'eos-es)
 (try-load 'eos-org)
 (try-load 'eos-cc-nav)                  ;ergo keys!
