@@ -362,7 +362,7 @@ Emacs, so it's nice to have the option if desired..
 Desktop+ will automatically save the desktop when Emacs exits
 
 #+BEGIN_src emacs-lisp
-(desktop-save-mode 1) ;;desktop+ not working for me
+;;(desktop-save-mode 1) ;;desktop+ not working for me
 ;; load all values eagerly
 (setq desktop-restore-eager 10)
 ;; Don't save TRAMP, ftp, or "KILL" buffers

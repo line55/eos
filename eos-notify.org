@@ -31,56 +31,57 @@ To use this, I just need to do =(alert "this is a message")=.
 The all-seeing eye of Sauron
 
 #+BEGIN_SRC emacs-lisp
-(use-package sauron
-  :ensure t
-  :init
-  (when (eq system-type 'darwin)
-    ;; Remove dbus if on OSX
-    (require 'sauron)
-    (setq sauron-modules (remove 'sauron-dbus sauron-modules)))
+  (use-package sauron
+    :ensure t
+    :init
+    (when (eq system-type 'darwin)
+      ;; Remove dbus if on OSX
+      (require 'sauron)
+      (setq sauron-modules (remove 'sauron-dbus sauron-modules)))
 
-  (setq sauron-max-line-length 120
-        sauron-watch-patterns '("dakrone" "thnetos" "okenezak")
-        sauron-watch-nicks '("dakrone" "thnetos")
-        sauron-nick-insensitivity 20
-        sauron-frame-geometry "120x36+0+0")
-  ;; filter out IRC spam
-  (defun tsp/hide-irc-user-spam (origin priority msg &optional properties)
-    (or (string-match "^*** Users" msg)))
-  (defun tsp/hide-tweet-counts (origin priority msg &optional properties)
-    (or (string-match "^[0-9]+ new tweets" msg)))
-  (add-hook 'sauron-event-block-functions #'tsp/hide-irc-user-spam)
-  (add-hook 'sauron-event-block-functions #'tsp/hide-tweet-counts)
+    (setq sauron-max-line-length 120
+          sauron-watch-patterns '("dakrone" "thnetos" "okenezak")
+          sauron-watch-nicks '("dakrone" "thnetos")
+          sauron-nick-insensitivity 20
+          sauron-frame-geometry "120x36+0+0"
+          sauron-modules (remove 'sauron-mu4e sauron-modules)
+    ;; filter out IRC spam
+    (defun tsp/hide-irc-user-spam (origin priority msg &optional properties)
+      (or (string-match "^*** Users" msg)))
+    (defun tsp/hide-tweet-counts (origin priority msg &optional properties)
+      (or (string-match "^[0-9]+ new tweets" msg)))
+    (add-hook 'sauron-event-block-functions #'tsp/hide-irc-user-spam)
+    (add-hook 'sauron-event-block-functions #'tsp/hide-tweet-counts)
 
-  (sauron-start-hidden)
-  ;; Need to stop tracking notifications, because sauron will be sending
-  ;; notifications!
-  (sauron-notifications-stop)
-  (add-hook 'sauron-event-added-functions 'sauron-alert-el-adapter)
-  :commands (sauron-toggle-hide-show)
-  :bind ("M-s" . sauron-toggle-hide-show)
-  :config
-  ;; Add the unread sauron notification count to the modeline
-  ;;(add-to-list 'global-mode-string '(cdr (sauron-count-events)))
+    (sauron-start-hidden)
+    ;; Need to stop tracking notifications, because sauron will be sending
+    ;; notifications!
+    (sauron-notifications-stop)
+    (add-hook 'sauron-event-added-functions 'sauron-alert-el-adapter)
+    :commands (sauron-toggle-hide-show)
+    :bind ("M-s" . sauron-toggle-hide-show)
+    :config
+    ;; Add the unread sauron notification count to the modeline
+    ;;(add-to-list 'global-mode-string '(cdr (sauron-count-events)))
 
-  (defun eos/compilation-finish (buffer msg)
-    "Send a sauron notification for compilation completing"
-    (interactive)
-    (sauron-add-event 'compilation
-                      3
-                      (format "[%s]: %s" buffer msg)
-                      (lambda () (switch-to-buffer-other-window "*compilation*"))
-                      nil))
-  (add-to-list 'compilation-finish-functions #'eos/compilation-finish)
+    (defun eos/compilation-finish (buffer msg)
+      "Send a sauron notification for compilation completing"
+      (interactive)
+      (sauron-add-event 'compilation
+                        3
+                        (format "[%s]: %s" buffer msg)
+                        (lambda () (switch-to-buffer-other-window "*compilation*"))
+                        nil))
+    (add-to-list 'compilation-finish-functions #'eos/compilation-finish)
 
-  (defun finish ()
-    "Generic function for signaling something is \"done\"."
-    (interactive)
-    (sauron-add-event major-mode
-                      3
-                      (concat "Finished command in " (buffer-name))
-                      (lambda () (switch-to-buffer-other-window (buffer-name)))
-                      nil)))
+    (defun finish ()
+      "Generic function for signaling something is \"done\"."
+      (interactive)
+      (sauron-add-event major-mode
+                        3
+                        (concat "Finished command in " (buffer-name))
+                        (lambda () (switch-to-buffer-other-window (buffer-name)))
+                        nil)))
 #+END_SRC
 
 * Notifications for running commands in Eshell

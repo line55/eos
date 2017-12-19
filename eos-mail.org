@@ -114,12 +114,12 @@ smtpmail-smtp-service 587)
 ;;       gnus-use-adaptive-scoring t)
 
 ;; Modify the summary line to show score
-;; (setq gnus-summary-line-format
-;;       "%U%R%z %d %I%(%[%4L: %-23,23f%]%') %[%3V%] %s\n")
+(setq gnus-summary-line-format
+       "%U%R%z %d %I%(%[%4L: %-23,23f%]%') %[%3V%] %s\n")
 
-;; (setq gnus-thread-sort-functions
-;;       '((not gnus-thread-sort-by-date)
-;;         (not gnus-thread-sort-by-number)))
+(setq gnus-thread-sort-functions
+      '((not gnus-thread-sort-by-date)
+        (not gnus-thread-sort-by-number)))
 
 (defun my-gnus-group-list-subscribed-groups ()
   "List all subscribed groups with or without un-read messages"
@@ -157,8 +157,8 @@ smtpmail-smtp-service 587)
 ;; several replies or is part of a thread, only show the first
 ;; message.  'gnus-thread-ignore-subject' will ignore the subject and
 ;; look at 'In-Reply-To:' and 'References:' headers.
-;; (setq gnus-thread-hide-subtree t)
-;; (setq gnus-thread-ignore-subject t)
+(setq gnus-thread-hide-subtree t)
+(setq gnus-thread-ignore-subject t)
 
 ;; http://www.gnu.org/software/emacs/manual/html_node/gnus/_005b9_002e2_005d.html
 (setq gnus-use-correct-string-widths nil)
