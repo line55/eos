@@ -348,7 +348,7 @@ And now the huge org-mode configuration
        (elasticsearch . t)
        (clojure . t)
        (dot . t)
-       (sh . t)
+       (shell . t)
        (js . t)
        (haskell . t)
        (ruby . t)
