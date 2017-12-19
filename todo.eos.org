@@ -31,7 +31,7 @@ Goddam sp-unwrap-sexp
 *** DONE change email and user name
 
 ** eos-org changes
-*** TODO Smart parens is hijacking important keys in org mode
+*** DONE Smart parens is hijacking important keys in org mode
 DEL and <M-d> and <M-f>
 Goddam sp-unwrap-sexp to delete a parens
 *** DONE Add my agenda files
@@ -74,17 +74,29 @@ Goddam sp-unwrap-sexp to delete a parens
             ("STARTED" ("WAITING") ("CANCELLED") ("HOLD"))
             ("DONE" ("WAITING") ("CANCELLED") ("HOLD"))))
 #+end_src
-
-*** TODO IntraSee agenda separate
+*** DONE add in my old org mode setup
+:LOGBOOK:
+CLOCK: [2017-07-16 Sun 00:48]--[2017-07-16 Sun 02:45] =>  1:57
+CLOCK: [2017-05-14 Sun 18:48]--[2017-05-14 Sun 18:58] =>  0:10
+:END:
+#+begin_src emacs-lisp :tangle no
+(defun bh/insert-inactive-timestamp ()
+  (interactive)
+  (org-insert-time-stamp nil t t nil nil nil))
+(global-set-key (kbd "<f9> t") 'bh/insert-inactive-timestamp)
+#+end_src
+*** DONE IntraSee agenda separate
 Something that modifies org-agenda-files
-*** TODO How to expand archive set headings
-*** TODO message-mode from old-emacs
-*** TODO my gnus back
+*** DONE How to expand archive set headings
+*** DONE message-mode from old-emacs
+*** DONE my gnus back
 :LOGBOOK:
 CLOCK: [2017-05-08 Mon 16:41]--[2017-05-08 Mon 17:35] =>  0:54
 CLOCK: [2017-05-08 Mon 13:40]--[2017-05-08 Mon 13:44] =>  0:04
 :END:
 Need my dovecot and my mbsync?
+
+Lets see if I set up my gnus correctly. Ok I think it is ok now.
 * Emacs
 ** Store links to org heading custom ids?
 ** TODO don't use arrows to modify headings
@@ -93,9 +105,5 @@ Need my dovecot and my mbsync?
 ** eyebrowse
 C-' in order to cycle through 4 eyebrowse somethings
 ** gnu global?
-* Emacs Questions
-- where is major mode help stored? Is it from docstrings?
-- can you automatically find where the keybinding is defined?
-* This EOS git repo
-** TODO Host on GCP to avoid public scrutiny
-*** Upload code to GCP
+* keychords?
+http://timothypratley.blogspot.ca/2015/07/seven-specialty-emacs-settings-with-big.html

@@ -36,7 +36,7 @@ Let's manage the forecast and weather too, will be managed from the main Hydra
 (use-package wttrin
   :ensure t
   :init
-  (setq wttrin-default-cities '("Denver")))
+  (setq wttrin-default-cities '("Montreal")))
 #+END_SRC
 
 * Browsing stack overflow

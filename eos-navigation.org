@@ -74,10 +74,10 @@ Deletes whitespace at join."
 (global-set-key (kbd "C-k") 'kill-and-join-forward)
 
 ;; join line to next line
-(global-set-key (kbd "M-j")
-                (lambda ()
-                  (interactive)
-                  (join-line -1)))
+;; (global-set-key (kbd "M-j")
+;;                 (lambda ()
+;;                   (interactive)
+;;                   (join-line -1)))
 
 ;; Completion that uses many different methods to find options.
 (global-set-key (kbd "M-/") 'hippie-expand)
@@ -146,158 +146,6 @@ Need to enable this to get trackpad scrolling to work on my Lenovo T450s
                            (scroll-up 1)))
 (setq mouse-sel-mode t)
 (defun track-mouse (e))
-#+END_SRC
-
-* God-mode
-:PROPERTIES:
-:CUSTOM_ID: god-mode
-:END:
-God-mode was always something a little strange to me, halfway to =evil-mode=,
-but not quite Emacs.
-
-Lately though, I've begun using it because it allows me to do things I spend a
-lot of time doing (navigating) without hitting control. This is especially
-helpful because while I don't suffer from the so-called "Emacs-pinky", I am
-instead suffering from "Emacs-thumb".
-
-#+BEGIN_SRC emacs-lisp
-(use-package god-mode
-  :ensure t
-  :disabled t
-  :bind ("<escape>" . god-mode-all)
-  :config
-  (global-set-key (kbd "<escape>") 'god-mode-all)
-  (define-key god-local-mode-map (kbd ".") 'repeat)
-  (define-key god-local-mode-map (kbd "i") 'god-local-mode)
-  (defun god-update-cursor ()
-    "Update my cursor."
-    (setq cursor-type
-          (if god-local-mode
-              'box
-            'bar)))
-  ;;(add-hook 'god-mode-enabled-hook 'god-update-cursor)
-  ;;(add-hook 'god-mode-disabled-hook 'god-update-cursor)
-  (add-to-list 'god-exempt-major-modes 'sauron-mode)
-  (add-to-list 'god-exempt-major-modes 'eshell-mode)
-  (add-to-list 'god-exempt-major-modes 'org-agenda-mode)
-  (add-to-list 'god-exempt-major-modes 'mingus-playlist-mode)
-  (add-to-list 'god-exempt-major-modes 'mingus-browse-mode)
-  (add-to-list 'god-exempt-major-modes 'twittering-mode)
-  (add-to-list 'god-exempt-major-modes 'Man-mode)
-  (add-to-list 'god-exempt-major-modes 'proced-mode)
-  (add-to-list 'god-exempt-major-modes 'gnus-summary-mode)
-  (add-to-list 'god-exempt-major-modes 'gnus-article-mode)
-  (add-to-list 'god-exempt-major-modes 'gnus-group-mode)
-  (add-to-list 'god-exempt-major-modes 'elfeed-search-mode)
-  (add-to-list 'god-exempt-major-modes 'haskell-interactive-mode)
-  (add-to-list 'god-exempt-major-modes 'epresent-mode)
-  (add-to-list 'god-exempt-major-modes 'compilation-mode)
-  (add-to-list 'god-exempt-major-modes 'Custom-mode)
-  ;; Finally, a fix for key-translation-map by redefining the
-  ;; `key-string-after-consuming-key' method, courtesy of
-  ;; https://github.com/chrisdone/god-mode/issues/75
-  (defun key-string-after-consuming-key (key key-string-so-far)
-    "Interpret god-mode special keys for key (consumes more keys
-if appropriate). Append to keysequence."
-    (let ((key-consumed t) next-modifier next-key)
-      (message key-string-so-far)
-      (setq next-modifier
-            (cond
-             ((string= key god-literal-key)
-              (setq god-literal-sequence t)
-              "")
-             (god-literal-sequence
-              (setq key-consumed nil)
-              "")
-             ((and
-               (stringp key)
-               (not (eq nil (assoc key god-mod-alist)))
-               (not (eq nil key)))
-              (cdr (assoc key god-mod-alist)))
-             (t
-              (setq key-consumed nil)
-              (cdr (assoc nil god-mod-alist))
-              )))
-      (setq next-key
-            (if key-consumed
-                (god-mode-sanitized-key-string (read-event key-string-so-far))
-              key))
-      (let* ((literal-key-string (concat next-modifier next-key))
-             (translation (lookup-key key-translation-map (kbd literal-key-string)))
-             (next-interpreted-key-string (or translation literal-key-string)))
-        (if key-string-so-far
-            (concat key-string-so-far " " next-interpreted-key-string)
-          next-interpreted-key-string)))))
-#+END_SRC
-
-* Evil?
-:PROPERTIES:
-:CUSTOM_ID: h:1b908c93-31ea-4e8f-83c1-d6547557b214
-:END:
-I'm mostly just trying this out, I haven't had a lot of luck with it though,
-which is why it's currently disabled
-
-#+BEGIN_SRC emacs-lisp
-(use-package evil
-  :ensure t
-  :disabled t
-  :demand
-  :init (evil-mode t)
-  :config
-  (setq evil-find-skip-newlines t)
-  ;; I stole this from Mike
-  ;; Redefine evil bindings to make more sense on Dvorak. I want to define my
-  ;; own, as evil-dvorak didn't use the same keys I wanted to setup.
-  ;; (define-key evil-normal-state-map "d" 'evil-backward-char) ;
-  ;; (define-key evil-normal-state-map "h" 'evil-next-line)
-  ;; (define-key evil-normal-state-map "t" 'evil-previous-line)
-  ;; (define-key evil-visual-state-map "n" 'evil-forward-char)
-  ;; (define-key evil-visual-state-map "d" 'evil-backward-char)
-  ;; (define-key evil-visual-state-map "h" 'evil-next-line)
-  ;; (define-key evil-visual-state-map "t" 'evil-previous-line)
-  ;; (define-key evil-normal-state-map "n" 'evil-forward-char)
-  ;; (define-key evil-normal-state-map "k" 'evil-delete)
-  ;; (define-key evil-visual-state-map "k" 'evil-delete)
-  ;; (define-key evil-normal-state-map "K" 'evil-delete-line)
-  ;; (define-key evil-normal-state-map "j" 'evil-find-char-to)
-  ;; (define-key evil-normal-state-map "J" 'evil-find-char-to-backward)
-  ;; (define-key evil-motion-state-map "l" 'evil-search-next)
-  ;; (define-key evil-motion-state-map "L" 'evil-search-previous)
-  ;; (define-key evil-normal-state-map "gj" 'evil-join)
-  (use-package evil-leader
-    :ensure t
-    :init (global-evil-leader-mode)
-    :config
-    (evil-leader/set-leader ",")
-    (evil-leader/set-key
-      ;; NOTE evil-leader/set-key-for-mode only works for major modes
-      ;; Flycheck
-      "e"  'flycheck-next-error
-      "E"  'flycheck-previous-error
-      ;; Org, while a major mode, I want these available all the time
-      "oa" 'org-agenda
-      "oc" 'org-capture
-      ;; Dired
-      "d"  'dired-jump
-      ;; Commenting
-      "ci" 'evilnc-comment-or-uncomment-lines
-      "cp" 'evilnc-comment-or-uncomment-paragraphs
-      "cr" 'comment-or-uncomment-region
-      "cl" 'comment-indent
-      ;; Helm
-      "a"  'helm-apropos
-      "k"  'helm-descbinds
-      "m"  'helm-man-woman
-      "x"  'helm-M-x
-      "f"  'helm-find-files
-      "y"  'helm-show-kill-ring
-      "b"  'helm-buffers-list)
-    ;; org-mode specific keybindings
-    (evil-leader/set-key-for-mode 'org-mode
-      "cp" 'org-set-property)
-    ;; dired-mode specific keybindings
-    (evil-leader/set-key-for-mode 'dired-mode
-      "ch"  'wdired-change-to-wdired-mode)))
 #+END_SRC
 
 * Dumb-jump
